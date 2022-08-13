@@ -44,11 +44,11 @@ public class Utencil : MonoBehaviour
         }
 
         DishData orderTransform = new DishData();
-        if (res!=null)
-        {
+        //if (res!=null)
+        //{
 
-            orderTransform = OrderManager.Instance.tryRemove(res);
-        }
+        //    orderTransform = OrderManager.Instance.tryRemove(res);
+        //}
         var dish = Instantiate(dishPrefab,transform.position,Quaternion.identity);
 
         dish.GetComponent<Dish>().init(res, orderTransform);

@@ -80,8 +80,14 @@ public class OrderManager : Singleton<OrderManager>
     public void remove(DishData data)
     {
         var index = dishes.FindIndex(x => x.time == data.time);
+        if(index == -1)
+        {
+
+            return;
+        }
         dishes.RemoveAt(index);
         EventPool.Trigger("updateOrder");
+        EventPool.Trigger("finishOrder", data.name);
     }
     public Vector3 getDishCellPosition(DishData data)
     {

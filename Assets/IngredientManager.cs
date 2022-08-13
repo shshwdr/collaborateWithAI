@@ -6,7 +6,9 @@ using UnityEngine;
 
 public class IngredientManager : Singleton<IngredientManager>
 {
-
+    public int maxIngredient = 20;
+    public float fillTime = 2;
+    float fillTimer = 0;
     struct RecipeData {
         public List<string> ingredient;
         public string utencil;
@@ -144,6 +146,11 @@ public class IngredientManager : Singleton<IngredientManager>
         }
     }
 
+    void addRandomIngredient()
+    {
+        ingredients.Add(initIngredient(ingredientTypes[Random.Range(0, ingredientTypes.Count)]));
+    }
+
     public GameObject selectUtencil(Robot robot,List<GameObject> visited)
     {
         float shortestDistance = 100000;
@@ -206,6 +213,15 @@ public class IngredientManager : Singleton<IngredientManager>
     // Update is called once per frame
     void Update()
     {
-        
+        fillTimer += Time.deltaTime;
+        if (fillTimer >= fillTime)
+        {
+            fillTimer = 0;
+            if (ingredients.Count < maxIngredient)
+            {
+
+                addRandomIngredient();
+            }
+        }
     }
 }
