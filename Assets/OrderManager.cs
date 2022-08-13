@@ -10,16 +10,20 @@ public struct DishData
     public bool isPreRemoved;
     public float time;
     public float patienceTime;
+    public int customerIndex;
     public DishData(string n)
     {
         name = n;
         isPreRemoved = false;
         time = Time.time;
         patienceTime = 50;
+        customerIndex = Random.Range(0, OrderManager.Instance.customerSprites.Count);
     }
 }
 public class OrderManager : Singleton<OrderManager>
 {
+    public List<Sprite> customerSprites;
+
     public List<DishData> dishes;
     public OrderCell[] cells;
     float orderTime = 3f;

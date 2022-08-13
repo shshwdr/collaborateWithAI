@@ -15,6 +15,7 @@ public class OrderCell : MonoBehaviour
     public Image utencilImage;
 
     public Image patienceBar;
+    public Image customerImage;
     //public Text dishString;
     // Start is called before the first frame update
     void Start()
@@ -44,6 +45,8 @@ public class OrderCell : MonoBehaviour
 
            // dishString.text += "\n";
         utencilImage.sprite = IngredientManager.getUtencilImage(recipe[recipe.Count - 1]);
+
+        customerImage.sprite = OrderManager.Instance.customerSprites[data.customerIndex];
         //dishString.text += recipe[recipe.Count - 1] + " ";
     }
 
