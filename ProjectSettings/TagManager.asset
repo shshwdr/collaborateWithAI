@@ -47,3 +47,6 @@ TagManager:
   - name: item
     uniqueID: 959957283
     locked: 0
+  - name: dish
+    uniqueID: 1692981073
+    locked: 0

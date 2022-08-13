@@ -9,6 +9,7 @@ public class Robot : MonoBehaviour
     GameObject target;
     public float moveSpeed;
     GameObject holdIngredent;
+    GameObject rubishBin;
 
     float pickupRange = 0.1f;
 
@@ -20,6 +21,7 @@ public class Robot : MonoBehaviour
     {
         path = GetComponentInChildren<LineRenderer>();
         instructionSelectionPanel.SetActive(isSelecting);
+        rubishBin = GameObject.FindObjectOfType<RubishBin>().gameObject;
     }
     bool isClick()
     {
@@ -71,7 +73,15 @@ public class Robot : MonoBehaviour
                 {
                     //drop ingredient and move to next
 
-                    target.GetComponent<Utencil>().addIngredient(holdIngredent);
+                    if (target.GetComponent<RubishBin>())
+                    {
+                        target.GetComponent<RubishBin>().throwItem(holdIngredent);
+                    }
+                    else
+                    {
+
+                        target.GetComponent<Utencil>().addIngredient(holdIngredent);
+                    }
 
                     holdIngredent = null;
                     target = null;
@@ -136,6 +146,11 @@ public class Robot : MonoBehaviour
             {
 
                 target = nextOption;
+            }
+            else
+            {
+                //goto bin
+                target = rubishBin;
             }
         }
         else

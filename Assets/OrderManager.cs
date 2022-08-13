@@ -77,6 +77,14 @@ public class OrderManager : Singleton<OrderManager>
         }
         return new DishData();
     }
+
+    public void remove(int index)
+    {
+
+        EventPool.Trigger("finishOrder", dishes[index].name);
+        dishes.RemoveAt(index);
+        EventPool.Trigger("updateOrder");
+    }
     public void remove(DishData data)
     {
         var index = dishes.FindIndex(x => x.time == data.time);
@@ -93,7 +101,15 @@ public class OrderManager : Singleton<OrderManager>
     {
         var index = dishes.FindIndex(x => x.time == data.time);
         var transform = cells[index].transform;
-            Vector3 orderPosition = Camera.main.ScreenToWorldPoint(transform.position);
+        Vector3 orderPosition = Camera.main.ScreenToWorldPoint(transform.position);
+        return orderPosition;
+    }
+
+    public Vector3 getCellPosition(int index)
+    {
+
+        var transform = cells[index].transform;
+        Vector3 orderPosition = Camera.main.ScreenToWorldPoint(transform.position);
         return orderPosition;
     }
 
@@ -101,7 +117,7 @@ public class OrderManager : Singleton<OrderManager>
     {
         dishes = new List<DishData>();
         addOrder();
-        //cells = GameObject.FindObjectsOfType<OrderCell>(true);
+        cells = GameObject.FindObjectsOfType<OrderCell>(true);
     }
 
 

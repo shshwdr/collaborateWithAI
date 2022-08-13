@@ -49,7 +49,7 @@ public class Utencil : MonoBehaviour
 
         //    orderTransform = OrderManager.Instance.tryRemove(res);
         //}
-        var dish = Instantiate(dishPrefab,transform.position,Quaternion.identity);
+        var dish = Instantiate(dishPrefab,transform.position,Quaternion.identity,transform);
 
         dish.GetComponent<Dish>().init(res, orderTransform);
     }
