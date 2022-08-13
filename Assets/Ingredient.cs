@@ -10,8 +10,12 @@ public class Ingredient : MonoBehaviour
     public void init(string type)
     {
         ingredientType = type;
-
-        GetComponentInChildren<SpriteRenderer>().sprite = Resources.Load<Sprite>("ingredient/"+type);
+        var sprite = Resources.Load<Sprite>("ingredient/" + type);
+        if (!sprite)
+        {
+            Debug.LogError("failed to find ingredient image " + type);
+        }
+        GetComponentInChildren<SpriteRenderer>().sprite = sprite;
 
     }
     // Start is called before the first frame update

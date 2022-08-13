@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class ChatBox : MonoBehaviour
 {
-    public float textStayTime = 5f;
+    public float textStayTime = 2f;
     float textTimer = 0;
     public Text text;
     // Start is called before the first frame update
@@ -18,7 +18,7 @@ public class ChatBox : MonoBehaviour
     public void show(string t)
     {
         text.text = t;
-        textTimer = 5;
+        textTimer = textStayTime;
         gameObject.SetActive(true);
     }
 

@@ -16,7 +16,7 @@ public class Robot : MonoBehaviour
 
     bool isSelecting = false;
 
-    public GameObject chatObject;
+    public ChatBox chatObject;
 
     LineRenderer path;
     // Start is called before the first frame update
@@ -39,36 +39,74 @@ public class Robot : MonoBehaviour
         }
         return false;
     }
+
+    IEnumerator test()
+    {
+
+            if (Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(0))
+            {
+                yield return new WaitForSeconds(0.1f);
+                isSelecting = false;
+                instructionSelectionPanel.SetActive(isSelecting);
+            }
+    }
     // Update is called once per frame
     void Update()
     {
+
+    if (isSelecting)
+        {
+            StartCoroutine(test());
+            return;
+        }
+
         if (Input.GetMouseButtonDown(0))
         {
-            if (isClick())
+            if (!isSelecting && isClick())
             {
                // Debug.Log("slap");
                 slap();
             }
+
         }
         if (Input.GetMouseButtonDown(1))
         {
-            if (isClick())
+            if (!isSelecting && isClick())
             {
                 //Debug.Log("right");
-                isSelecting = !isSelecting;
+                isSelecting = true;
                 instructionSelectionPanel.SetActive(isSelecting);
             }
         }
 
-        if (isSelecting)
+        if (isDeciding)
         {
-            return;
+            decidingTimer -= Time.deltaTime;
+            if (decidingTimer <= 0)
+            {
+                isDeciding = false;
+            }
+            else
+            {
+                return;
+            }
         }
 
         if (target)
         {
             path.SetPosition(0, transform.position);
             path.SetPosition(1, target.transform.position);
+
+
+            if (!holdIngredent)
+            {
+                if (!target.GetComponent<Ingredient>().canPick())
+                {
+                    Debug.Log("already picked by another");
+                    chatObject.show("Don't take my stuff!");
+                    decideNextTarget();
+                }
+            }
 
             if ((target.transform.position - transform.position).magnitude<pickupRange)
             {
@@ -95,8 +133,8 @@ public class Robot : MonoBehaviour
 
 
                     visitedObjects = new List<GameObject>();
-
-                    decideNextTarget();
+                    startDeciding();
+                   // decideNextTarget();
                 }
                 else
                 {
@@ -114,13 +152,20 @@ public class Robot : MonoBehaviour
                 transform.Translate(dir * moveSpeed * Time.deltaTime);
             }
         }
+        else
+        {
+
+            decideNextTarget();
+        }
     }
 
     public void selectInstruction(string ins)
     {
         instruction = ins;
         visitedObjects = new List<GameObject>();
-        decideNextTarget();
+
+        startDeciding();
+
 
 
         isSelecting = false;
@@ -142,7 +187,17 @@ public class Robot : MonoBehaviour
 
     }
 
-    List<GameObject> visitedObjects;
+    bool isDeciding = false;
+    float decidingTime = 2f;
+    float decidingTimer = 0;
+    void startDeciding()
+    {
+        isDeciding = true;
+        chatObject.show("What to take");
+        decidingTimer = decidingTime;
+    }
+
+    List<GameObject> visitedObjects = new List<GameObject>();
 
     void slap()
     {

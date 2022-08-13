@@ -26,7 +26,7 @@ public class IngredientManager : Singleton<IngredientManager>
     }
 
 
-    static public List<string> ingredientTypes = new List<string>() { "egg", "apple",/* "onion", "lettuce", "pepper", "potato"*/ };
+    static public List<string> ingredientTypes = new List<string>() { "egg", "apple","chocolate","cheese", "broccoli", "meat"/* "onion", "lettuce", "pepper", "potato"*/ };
     static public List<string> InstructionTypes = new List<string>() { "round", "notRound", "red", "yellow", "green" };
     static public List<string> UtencilTypes = new List<string>() { "pan","pot" };
 
@@ -93,8 +93,32 @@ public class IngredientManager : Singleton<IngredientManager>
     GameObject initIngredient(string ing)
     {
         //
-        var position = new Vector3(Random.Range(-11, 16), Random.Range(5, 8), 0);
+        var position = new Vector3(Random.Range(-11, 16), Random.Range(-5, 8), 0);
+
+        int test = 100;
+        while (test > 0)
+        {
+            bool isWork = true;
+            foreach (var ingre in ingredients)
+            {
+                if (ingre.GetComponent<Ingredient>().canPick() && ingre.transform.position == position)
+                {
+                    position = new Vector3(Random.Range(-11, 16), Random.Range(5, 8), 0);
+                    isWork = false;
+                }
+            }
+            if (isWork)
+            {
+                break;
+            }
+            test--;
+        }
+        if(test == 0)
+        {
+            return null;
+        }
         var go = Instantiate(ingredientPrefab, position, Quaternion.identity,parent.transform);
+
         go.GetComponent<Ingredient>().init(ing);
 
         
@@ -106,17 +130,26 @@ public class IngredientManager : Singleton<IngredientManager>
         utencils = GameObject.FindObjectsOfType<Utencil>();
         ingredientToInstructions["egg"] = new List<string>() { "round", "yellow" };
         ingredientToInstructions["apple"] = new List<string>() { "round", "red" };
-        ingredientToInstructions["onion"] = new List<string>() { "round", "yellow" };
+        ingredientToInstructions["meat"] = new List<string>() { "notRound", "red" };
+        ingredientToInstructions["chocolate"] = new List<string>() { "notRound"};
+        ingredientToInstructions["broccoli"] = new List<string>() { "notRound", "green" };
+        ingredientToInstructions["cheese"] = new List<string>() { "notRound", "yellow" };
 
         recipe["pan"] = new List<List<string>>()
         {
             new List<string>(){ "egg","friedEgg" },
+            new List<string>(){ "egg","meat","Ham and Egg" },
+            new List<string>(){ "broccoli", "meat", "beef and broccoli" },
+
         };
 
 
         recipe["pot"] = new List<List<string>>()
         {
             new List<string>(){ "egg","boilingEgg" },
+            new List<string>(){ "apple","apple jam" },
+            new List<string>(){ "meat", "broccoli", "stew" },
+            new List<string>(){ "cheese", "broccoli", "Spaghetti" },
         };
 
         foreach(var pair in recipe)
@@ -141,14 +174,22 @@ public class IngredientManager : Singleton<IngredientManager>
             ingredients = new List<GameObject>();
         foreach(var ing in ingredientTypes)
         {
-            ingredients.Add(initIngredient(ing));
-            ingredients.Add(initIngredient(ing));
+            addIngredient(initIngredient(ing));
+            addIngredient(initIngredient(ing));
+        }
+    }
+
+    void addIngredient(GameObject go)
+    {
+        if (go)
+        {
+            ingredients.Add(go);
         }
     }
 
     void addRandomIngredient()
     {
-        ingredients.Add(initIngredient(ingredientTypes[Random.Range(0, ingredientTypes.Count)]));
+        addIngredient(initIngredient(ingredientTypes[Random.Range(0, ingredientTypes.Count)]));
     }
 
     public GameObject selectUtencil(Robot robot,List<GameObject> visited)

@@ -89,7 +89,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 230d16295339b4947b1f39f060ba1a13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  textStayTime: 5
+  textStayTime: 2
   text: {fileID: 2596785151860762427}
 --- !u!1 &2596785151860762429
 GameObject:
