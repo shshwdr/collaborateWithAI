@@ -131,6 +131,8 @@ public class Robot : MonoBehaviour
                         }
                     }
 
+                    IngredientManager.Instance.removeIngredient(holdIngredent);
+
                     holdIngredent = null;
                     target = null;
 

@@ -60,7 +60,7 @@ public class Utencil : MonoBehaviour
 
     bool canCook()
     {
-        var res = IngredientManager.Instance.cook(utencilType, ingredientTypes);
+        var res = IngredientManager.cook(utencilType, ingredientTypes);
         if (res != null)
         {
             for (int i = 0; i < OrderManager.Instance.dishes.Count; i++)
@@ -82,7 +82,7 @@ public class Utencil : MonoBehaviour
 
     void cook()
     {
-        var res = IngredientManager.Instance.cook(utencilType, ingredientTypes);
+        var res = IngredientManager.cook(utencilType, ingredientTypes);
         Debug.Log("cook "+res);
         if (res!=null)
         {
@@ -96,7 +96,7 @@ public class Utencil : MonoBehaviour
         }
         foreach (var ingre in ingredients)
         {
-            IngredientManager.Instance.removeIngredient(ingre);
+            //IngredientManager.Instance.removeIngredient(ingre);
             Destroy(ingre);
         }
         ingredientTypes.Clear();

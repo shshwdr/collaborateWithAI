@@ -1,0 +1,1 @@
+Sprites are too big. A scale down to ~150px width should be right.

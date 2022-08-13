@@ -17,7 +17,6 @@ public class RubishBin : MonoBehaviour
     }
     public void throwItem(GameObject ingredient)
     {
-        IngredientManager.Instance.removeIngredient(ingredient);
         Destroy(ingredient);
     }
 }

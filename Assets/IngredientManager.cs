@@ -119,7 +119,7 @@ public class IngredientManager : Singleton<IngredientManager>
         return sprite;
     }
 
-    public string cook(string utencil, List<string> ingredient)
+    public static string cook(string utencil, List<string> ingredient)
     {
         foreach(var reci in recipe[utencil])
         {
