@@ -9,11 +9,13 @@ public struct DishData
     public string name;
     public bool isPreRemoved;
     public float time;
+    public float patienceTime;
     public DishData(string n)
     {
         name = n;
         isPreRemoved = false;
         time = Time.time;
+        patienceTime = 50;
     }
 }
 public class OrderManager : Singleton<OrderManager>
@@ -50,7 +52,16 @@ public class OrderManager : Singleton<OrderManager>
 
     void addOrder(string dishString)
     {
-        dishes.Add(new DishData(dishString));
+        var dishData = new DishData(dishString);
+        dishes.Add(dishData);
+
+        for(int i = 0;i< IngredientManager.recipeByName[dishString].Count - 1; i++)
+        {
+            var ingre = IngredientManager.recipeByName[dishString][i];
+            ingredientToSelect.Add(new IngredientToSelectData(ingre, dishData));
+        }
+
+
         EventPool.Trigger("updateOrder");
     }
     //public void removeOrder(string dishString)
@@ -78,24 +89,78 @@ public class OrderManager : Singleton<OrderManager>
         return new DishData();
     }
 
-    public void remove(int index)
-    {
+    //void remove(int index)
+    //{
 
-        EventPool.Trigger("finishOrder", dishes[index].name);
-        dishes.RemoveAt(index);
-        EventPool.Trigger("updateOrder");
-    }
+    //    EventPool.Trigger("finishOrder", dishes[index].name);
+    //    dishes.RemoveAt(index);
+    //    EventPool.Trigger("updateOrder");
+    //}
     public void remove(DishData data)
     {
         var index = dishes.FindIndex(x => x.time == data.time);
         if(index == -1)
         {
-
+            Debug.LogError("remove dish wrong");
             return;
         }
+
+        var dishString = data.name;
+        int selectionIndexToBeDecrease = 0;
+            for (int i = 0; i < IngredientManager.recipeByName[dishString].Count - 1; i++)
+        {
+            var ingre = IngredientManager.recipeByName[dishString][i];
+            var removeIndex = ingredientToSelect.FindIndex(x => x.ingredient == ingre&&x.dishData.time == data.time);
+            if (removeIndex <= currentSelectIngredientIndex)
+            {
+                selectionIndexToBeDecrease++;
+            }
+            ingredientToSelect.RemoveAt(removeIndex);
+        }
+        currentSelectIngredientIndex -= selectionIndexToBeDecrease;
+
+
         dishes.RemoveAt(index);
+
+
         EventPool.Trigger("updateOrder");
         EventPool.Trigger("finishOrder", data.name);
+    }
+
+    
+
+    int currentSelectIngredientIndex = 0;
+    public string findNextIngredient()
+    {
+            int test = 10;
+            while (test > 0)
+        {
+
+
+            if (ingredientToSelect.Count <= currentSelectIngredientIndex)
+            {
+                currentSelectIngredientIndex = 0;
+            }
+            if (currentSelectIngredientIndex < 0)
+            {
+                Debug.LogError("should not get lower than 0");
+                currentSelectIngredientIndex = 0;
+            }
+            var selection = ingredientToSelect[currentSelectIngredientIndex].ingredient;
+
+            currentSelectIngredientIndex++;
+
+            var ingredientExist = IngredientManager.Instance.doesIngredientHasCount(selection);
+            if (ingredientExist)
+            {
+                return selection;
+
+            }
+            test--;
+        }
+
+
+        return IngredientManager.Instance.findIngredientWithCount();
     }
     public Vector3 getDishCellPosition(DishData data)
     {
@@ -117,8 +182,24 @@ public class OrderManager : Singleton<OrderManager>
     {
         dishes = new List<DishData>();
         addOrder();
+        addOrder();
         //cells = GameObject.FindObjectsOfType<OrderCell>(true);
     }
 
+    public struct IngredientToSelectData
+    {
+       public  string ingredient;
+        public bool isFinding;
+       public  DishData dishData;
+
+        public IngredientToSelectData(string name,DishData data)
+        {
+            ingredient = name;
+            dishData = data;
+            isFinding = false;
+        }
+    }
+
+    public List<IngredientToSelectData> ingredientToSelect = new List<IngredientToSelectData>();
 
 }

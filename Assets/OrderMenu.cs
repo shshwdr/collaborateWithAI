@@ -20,7 +20,7 @@ public class OrderMenu : MonoBehaviour
             if (i < dishes.Count)
             {
 
-                cell.init(dishes[i].name);
+                cell.init(dishes[i]);
                 cell.gameObject.SetActive(true);
             }
             else

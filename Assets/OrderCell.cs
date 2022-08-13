@@ -7,20 +7,24 @@ public class OrderCell : MonoBehaviour
 {
 
     public string dish;
+    DishData dishData;
     public Text dishString;
 
     public ChatBox chatBox;
     public List<Image> ingredientImages;
     public Image utencilImage;
+
+    public Image patienceBar;
     //public Text dishString;
     // Start is called before the first frame update
     void Start()
     {
     }
 
-    public void init(string d)
+    public void init(DishData data)
     {
-        dish = d;
+        dish = data.name;
+        dishData = data;
         dishString.text = dish;
 
         var recipe = IngredientManager.recipeByName[dish];
@@ -59,6 +63,15 @@ public class OrderCell : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        var timeDiff =  Time.time - dishData.time;
+        if (timeDiff > dishData.patienceTime)
+        {
+            //this one need to leave now
+            OrderManager.Instance.remove(dishData);
+        }
+        else
+        {
+            patienceBar.fillAmount = (dishData.patienceTime - timeDiff) / dishData.patienceTime;
+        }
     }
 }

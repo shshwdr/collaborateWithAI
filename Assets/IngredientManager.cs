@@ -26,8 +26,8 @@ public class IngredientManager : Singleton<IngredientManager>
     }
 
 
-    static public List<string> ingredientTypes = new List<string>() { "egg", "apple","broccoli", "meat"/*"cheese", "chocolate","onion", "lettuce", "pepper", "potato"*/ };
-    static public List<string> InstructionTypes = new List<string>() { /*"round",*/  "red", "yellow", "green" };
+    static public List<string> ingredientTypes = new List<string>() { "egg", "apple","broccoli", "meat","flour","pepper"/*"cheese", "chocolate","onion", "lettuce", "pepper", "potato"*/ };
+    static public List<string> InstructionTypes = new List<string>() { /*"round",*/  "red", "white", "green" };
     static public List<string> UtencilTypes = new List<string>() { "pan","pot" };
 
     static public Dictionary<string, List<List<string>>> recipe = new Dictionary<string, List<List<string>>>()
@@ -40,6 +40,37 @@ public class IngredientManager : Singleton<IngredientManager>
     {
     };
     static public Dictionary<string, List<string>> instructionToIngredients;
+
+    Dictionary<string, int> ingredientCount = new Dictionary<string, int>();
+
+    public bool doesIngredientHasCount(string ingre)
+    {
+        return ingredientCount[ingre]>0;
+    }
+
+    public string findIngredientWithoutCount()
+    {
+        foreach(var pair in ingredientCount)
+        {
+            if (pair.Value == 0)
+            {
+                return pair.Key;
+            }
+        }
+        return null;
+    }
+
+    public string findIngredientWithCount()
+    {
+        foreach (var pair in ingredientCount)
+        {
+            if (pair.Value != 0)
+            {
+                return pair.Key;
+            }
+        }
+        return null;
+    }
 
 
     public GameObject ingredientPrefab;
@@ -63,6 +94,16 @@ public class IngredientManager : Singleton<IngredientManager>
         if (!sprite)
         {
             Debug.LogError("failed to find ingredient image " + str);
+        }
+        return sprite;
+    }
+    public static Sprite getIngredientImageShadow(string str)
+    {
+
+        var sprite = Resources.Load<Sprite>("ingredient/" + str+ "-shadow");
+        if (!sprite)
+        {
+            Debug.LogError("failed to find ingredient image shadow " + str);
         }
         return sprite;
     }
@@ -117,6 +158,8 @@ public class IngredientManager : Singleton<IngredientManager>
         //
         var position = new Vector3(Random.Range(-11, 16), Random.Range(-5, 8), 0);
 
+
+
         int test = 100;
         while (test > 0)
         {
@@ -125,9 +168,15 @@ public class IngredientManager : Singleton<IngredientManager>
             {
                 if (ingre.GetComponent<Ingredient>().canPick() && ingre.transform.position == position)
                 {
-                    position = new Vector3(Random.Range(-11, 16), Random.Range(5, 8), 0);
+                    position = new Vector3(Random.Range(-11, 16), Random.Range(-5, 8), 0);
                     isWork = false;
+                    break;
                 }
+            }
+            if (position.x >= -4 && position.x <= 9 && position.y <=0)
+            {
+                position = new Vector3(Random.Range(-11, 16), Random.Range(-5, 8), 0);
+                isWork = false;
             }
             if (isWork)
             {
@@ -150,18 +199,29 @@ public class IngredientManager : Singleton<IngredientManager>
     public void initBoard()
     {
         utencils = GameObject.FindObjectsOfType<Utencil>();
-        ingredientToInstructions["egg"] = new List<string>() { "yellow" };
+        ingredientToInstructions["egg"] = new List<string>() { "white" };
         ingredientToInstructions["apple"] = new List<string>() { "red" };
         ingredientToInstructions["meat"] = new List<string>() { "red" };
        // ingredientToInstructions["chocolate"] = new List<string>() { "notRound"};
         ingredientToInstructions["broccoli"] = new List<string>() {"green" };
-        ingredientToInstructions["cheese"] = new List<string>() {  "yellow" };
+        ingredientToInstructions["flour"] = new List<string>() { "white" };
+        ingredientToInstructions["pepper"] = new List<string>() { "green" };
 
         recipe["pan"] = new List<List<string>>()
         {
             new List<string>(){ "egg","friedEgg" },
             new List<string>(){ "egg","meat","Ham and Egg" },
             new List<string>(){ "broccoli", "meat", "beef and broccoli" },
+
+
+
+            new List<string>(){ "pepper", "meat", "beef and pepper" },
+            new List<string>(){ "apple", "flour", "apple pie" },
+            new List<string>(){ "flour", "egg", "cake" },
+            new List<string>(){ "pepper", "egg", "Pepper Egg-in-a-Hole" },
+
+
+            //new List<string>(){ "flour", "meat", "pizza" },
 
         };
 
@@ -170,8 +230,14 @@ public class IngredientManager : Singleton<IngredientManager>
         {
             new List<string>(){ "egg","boilingEgg" },
             new List<string>(){ "apple","apple jam" },
+
             new List<string>(){ "meat", "broccoli", "stew" },
-            //new List<string>(){ "cheese", "broccoli", "Spaghetti" },
+
+
+            new List<string>(){ "pepper", "apple","wowie jam" },
+            new List<string>(){ "flour", "broccoli", "vegetable Spaghetti" },
+            new List<string>(){ "flour", "meat", "meat Spaghetti" },
+
         };
 
         foreach(var pair in recipe)
@@ -186,6 +252,11 @@ public class IngredientManager : Singleton<IngredientManager>
                 recipe2.Add(pair.Key);
                 recipeByName[actualRecipe[actualRecipe.Count - 1]] = recipe2;
             }
+        }
+
+        foreach(var ingre in ingredientTypes)
+        {
+            ingredientCount[ingre] = 0;
         }
 
         if (parent)
@@ -206,12 +277,22 @@ public class IngredientManager : Singleton<IngredientManager>
         if (go)
         {
             ingredients.Add(go);
+            ingredientCount[(go.GetComponent<Ingredient>().ingredientType)]++ ;
         }
     }
 
     void addRandomIngredient()
     {
-        addIngredient(initIngredient(ingredientTypes[Random.Range(0, ingredientTypes.Count)]));
+        var emptyIngredient = findIngredientWithoutCount();
+        if (emptyIngredient != null)
+        {
+            addIngredient(initIngredient(emptyIngredient));
+        }
+        else
+        {
+            addIngredient(initIngredient(ingredientTypes[Random.Range(0, ingredientTypes.Count)]));
+        }
+
     }
 
     public GameObject selectUtencil(Robot robot,List<GameObject> visited)
@@ -250,9 +331,14 @@ public class IngredientManager : Singleton<IngredientManager>
             {
                 continue;
             }
+            var ingreType = ingre.GetComponent<Ingredient>().ingredientType;
+            if (!ingredientToInstructions.ContainsKey(ingreType))
+            {
+                Debug.LogError("ingre type not exist " + ingreType);
+            }
             if (ingre.GetComponent<Ingredient>().canPick())
             {
-                if (ingredientToInstructions[ingre.GetComponent<Ingredient>().ingredientType].Contains(instruction))
+                if (ingredientToInstructions[ingreType].Contains(instruction))
                 {
                     var distance = (robotPosition - ingre.transform.position).magnitude;
                     if (distance < shortestDistance)
@@ -263,12 +349,17 @@ public class IngredientManager : Singleton<IngredientManager>
                 }
             }
         }
-        visited.Add(res);
+        if (res != null)
+        {
+            visited.Add(res);
+        }
         return res;
     }
 
     public void removeIngredient(GameObject go)
     {
+        
+        ingredientCount[go.GetComponent<Ingredient>().ingredientType]--;
         ingredients.Remove(go);
     }
 

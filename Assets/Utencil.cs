@@ -47,7 +47,37 @@ public class Utencil : MonoBehaviour
 
         go.transform.parent = childParent;
         go.transform.localPosition = new Vector3(Random.Range(-0.2f, 0.2f), Random.Range(-0.2f, 0.2f), 0);
+
+        if (canCook())
+        {
+            cook();
+        }
+
+
         return true;
+    }
+
+
+    bool canCook()
+    {
+        var res = IngredientManager.Instance.cook(utencilType, ingredientTypes);
+        if (res != null)
+        {
+            for (int i = 0; i < OrderManager.Instance.dishes.Count; i++)
+            {
+                //Vector3 cellPosition = OrderManager.Instance.getCellPosition(i);
+                //var distance = ((Vector2)(cellPosition - transform.position)).magnitude;
+                //if (distance < checkCellDistance)
+                //{
+
+                    if (OrderManager.Instance.dishes[i].name == res)
+                    {
+                    return true;
+                    }
+                //}
+            }
+        }
+        return false;
     }
 
     void cook()
@@ -70,22 +100,34 @@ public class Utencil : MonoBehaviour
             Destroy(ingre);
         }
         ingredientTypes.Clear();
+        ingredients.Clear();
         DishData orderTransform = new DishData();
-        //if (res!=null)
-        //{
+        if (res!=null)
+        {
 
-        //    orderTransform = OrderManager.Instance.tryRemove(res);
-        //}
+            orderTransform = OrderManager.Instance.tryRemove(res);
+        }
         var dish = Instantiate(dishPrefab, childParent.position,Quaternion.identity, childParent);
 
         dish.GetComponent<Dish>().init(res, orderTransform);
+
     }
 
     private void OnMouseUpAsButton()
     {
-        if (ingredients.Count > 0 && GetComponentInChildren<Dish>()==null)
+        //if (ingredients.Count > 0 && GetComponentInChildren<Dish>() == null)
+        //{
+        //    cook();
+        //}
+
+        //clear ingredients
+        foreach (var ingre in ingredients)
         {
-            cook();
+            IngredientManager.Instance.removeIngredient(ingre);
+
+            Destroy(ingre);
         }
+        ingredients.Clear();
+        ingredientTypes.Clear();
     }
 }

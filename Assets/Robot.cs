@@ -27,7 +27,7 @@ public class Robot : MonoBehaviour
         path = GetComponentInChildren<LineRenderer>();
         instructionSelectionPanel.SetActive(isSelecting);
         rubishBin = GameObject.FindObjectOfType<RubishBin>().gameObject;
-        selectInstruction(IngredientManager.InstructionTypes[Random.Range(0, IngredientManager.InstructionTypes.Count - 1)]);
+        smartSelectInstruction();
     }
     bool isClick()
     {
@@ -137,8 +137,8 @@ public class Robot : MonoBehaviour
 
                     visitedObjects = new List<GameObject>();
                     // startDeciding();
-
-                    selectInstruction( IngredientManager.InstructionTypes[Random.Range(0, IngredientManager.InstructionTypes.Count - 1)]);
+                    startNextIngredientSelection();
+                    //smartSelectInstruction();
                     decideNextTarget();
                 }
                 else
@@ -148,6 +148,7 @@ public class Robot : MonoBehaviour
                     holdIngredent = target;
                     target.transform.parent = transform;
                     target = IngredientManager.Instance.selectUtencil(this,visitedObjects);
+                    smartDecideNextIngredientSelection();
                 }
             }
             else
@@ -162,6 +163,48 @@ public class Robot : MonoBehaviour
 
             decideNextTarget();
         }
+    }
+
+    public void smartSelectInstruction()
+    {
+        var nextIngredient = OrderManager.Instance.findNextIngredient();
+        var nextInstruction = IngredientManager.ingredientToInstructions[nextIngredient][0];
+        decideNextIngredientSelection(nextInstruction);
+        startNextIngredientSelection();
+        //selectInstruction(nextInstruction);
+    }
+
+    void smartDecideNextIngredientSelection()
+    {
+        var nextIngredient = OrderManager.Instance.findNextIngredient();
+        var nextInstruction = IngredientManager.ingredientToInstructions[nextIngredient][0];
+        decideNextIngredientSelection(nextInstruction);
+    }
+
+    public void randomeSelectInstruction()
+    {
+
+        selectInstruction(IngredientManager.InstructionTypes[Random.Range(0, IngredientManager.InstructionTypes.Count)]);
+    }
+
+    public void decideNextIngredientSelection(string ins)
+    {
+
+        instruction = ins;
+        Sprite image = Resources.Load<Sprite>("instruction/" + ins);
+        if (!image)
+        {
+            Debug.Log(" no instruction image " + ins);
+        }
+        currentInstructionImage.sprite = image;
+        currentInstructionImage.gameObject.SetActive(true);
+    }
+
+    public void startNextIngredientSelection()
+    {
+
+        visitedObjects = new List<GameObject>();
+        decideNextTarget();
     }
 
     public void selectInstruction(string ins)

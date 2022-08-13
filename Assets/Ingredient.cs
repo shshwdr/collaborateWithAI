@@ -7,12 +7,15 @@ public class Ingredient : MonoBehaviour
     public string ingredientType;
     public bool _canPick = true;
 
+    public SpriteRenderer ingredientRender;
+    public SpriteRenderer shadowRender;
+
     public void init(string type)
     {
         ingredientType = type;
         var sprite = IngredientManager.getIngredientImage(type);
-        GetComponentInChildren<SpriteRenderer>().sprite = sprite;
-
+        ingredientRender.sprite = sprite;
+        shadowRender.sprite = IngredientManager.getIngredientImageShadow(type);
     }
     // Start is called before the first frame update
     void Start()
