@@ -74,7 +74,7 @@ public class IngredientManager : Singleton<IngredientManager>
             {
                 for (int i = 0; i < ingredient.Count; i++)
                 {
-                    var requiredIngredient = reci[i];
+                    var requiredIngredient = ingredient[i];
                     if (!reci.Contains(requiredIngredient))
                     {
                         failed = true;

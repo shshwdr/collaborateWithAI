@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Robot : MonoBehaviour
 {
@@ -14,6 +15,8 @@ public class Robot : MonoBehaviour
     float pickupRange = 0.1f;
 
     bool isSelecting = false;
+
+    public GameObject chatObject;
 
     LineRenderer path;
     // Start is called before the first frame update
@@ -80,7 +83,11 @@ public class Robot : MonoBehaviour
                     else
                     {
 
-                        target.GetComponent<Utencil>().addIngredient(holdIngredent);
+                        if (!target.GetComponent<Utencil>().addIngredient(holdIngredent))
+                        {
+                            slap();
+                            return;
+                        }
                     }
 
                     holdIngredent = null;
