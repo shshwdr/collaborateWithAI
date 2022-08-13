@@ -26,8 +26,8 @@ public class IngredientManager : Singleton<IngredientManager>
     }
 
 
-    static public List<string> ingredientTypes = new List<string>() { "egg", "apple","chocolate","cheese", "broccoli", "meat"/* "onion", "lettuce", "pepper", "potato"*/ };
-    static public List<string> InstructionTypes = new List<string>() { "round", "notRound", "red", "yellow", "green" };
+    static public List<string> ingredientTypes = new List<string>() { "egg", "apple","broccoli", "meat"/*"cheese", "chocolate","onion", "lettuce", "pepper", "potato"*/ };
+    static public List<string> InstructionTypes = new List<string>() { /*"round",*/  "red", "yellow", "green" };
     static public List<string> UtencilTypes = new List<string>() { "pan","pot" };
 
     static public Dictionary<string, List<List<string>>> recipe = new Dictionary<string, List<List<string>>>()
@@ -54,6 +54,28 @@ public class IngredientManager : Singleton<IngredientManager>
     void Start()
     {
 
+    }
+
+    public static Sprite getIngredientImage(string str)
+    {
+
+        var sprite = Resources.Load<Sprite>("ingredient/" + str);
+        if (!sprite)
+        {
+            Debug.LogError("failed to find ingredient image " + str);
+        }
+        return sprite;
+    }
+
+    public static Sprite getUtencilImage(string str)
+    {
+
+        var sprite = Resources.Load<Sprite>("utencil/" + str);
+        if (!sprite)
+        {
+            Debug.LogError("failed to find utencil image " + str);
+        }
+        return sprite;
     }
 
     public string cook(string utencil, List<string> ingredient)
@@ -128,12 +150,12 @@ public class IngredientManager : Singleton<IngredientManager>
     public void initBoard()
     {
         utencils = GameObject.FindObjectsOfType<Utencil>();
-        ingredientToInstructions["egg"] = new List<string>() { "round", "yellow" };
-        ingredientToInstructions["apple"] = new List<string>() { "round", "red" };
-        ingredientToInstructions["meat"] = new List<string>() { "notRound", "red" };
-        ingredientToInstructions["chocolate"] = new List<string>() { "notRound"};
-        ingredientToInstructions["broccoli"] = new List<string>() { "notRound", "green" };
-        ingredientToInstructions["cheese"] = new List<string>() { "notRound", "yellow" };
+        ingredientToInstructions["egg"] = new List<string>() { "yellow" };
+        ingredientToInstructions["apple"] = new List<string>() { "red" };
+        ingredientToInstructions["meat"] = new List<string>() { "red" };
+       // ingredientToInstructions["chocolate"] = new List<string>() { "notRound"};
+        ingredientToInstructions["broccoli"] = new List<string>() {"green" };
+        ingredientToInstructions["cheese"] = new List<string>() {  "yellow" };
 
         recipe["pan"] = new List<List<string>>()
         {
@@ -149,7 +171,7 @@ public class IngredientManager : Singleton<IngredientManager>
             new List<string>(){ "egg","boilingEgg" },
             new List<string>(){ "apple","apple jam" },
             new List<string>(){ "meat", "broccoli", "stew" },
-            new List<string>(){ "cheese", "broccoli", "Spaghetti" },
+            //new List<string>(){ "cheese", "broccoli", "Spaghetti" },
         };
 
         foreach(var pair in recipe)

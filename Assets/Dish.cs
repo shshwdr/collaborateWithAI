@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Dish : MonoBehaviour
 {
@@ -11,6 +12,8 @@ public class Dish : MonoBehaviour
     Vector3 originalPositon;
     OrderCell aroundCell;
     int aroundIndex = -1;
+
+    public Text dishText;
 
     public float checkCellDistance = 1;
     // Start is called before the first frame update
@@ -43,6 +46,14 @@ public class Dish : MonoBehaviour
         originalPositon = transform.position;
     }
 
+    private void OnMouseEnter()
+    {
+        dishText.text = dishName;   
+    }
+    private void OnMouseExit()
+    {
+        dishText.text = "";
+    }
     void OnMouseUp()
     {
         if (isAroundRubishBin)
@@ -72,12 +83,13 @@ public class Dish : MonoBehaviour
 
                 if (OrderManager.Instance.dishes[i].name != dishName)
                 {
-
+                    OrderManager.Instance.cells[i].showWithFood(false);
                     Debug.Log("I don't like it");
                 }
                 else
                 {
 
+                    OrderManager.Instance.cells[i].showWithFood(true);
                     Debug.Log("I like it! distance to cell " + i + " is close");
                     aroundCell = OrderManager.Instance.cells[i];
                     aroundIndex = i;

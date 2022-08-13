@@ -12,6 +12,8 @@ public class Robot : MonoBehaviour
     GameObject holdIngredent;
     GameObject rubishBin;
 
+    public Image currentInstructionImage;
+
     float pickupRange = 0.1f;
 
     bool isSelecting = false;
@@ -25,6 +27,7 @@ public class Robot : MonoBehaviour
         path = GetComponentInChildren<LineRenderer>();
         instructionSelectionPanel.SetActive(isSelecting);
         rubishBin = GameObject.FindObjectOfType<RubishBin>().gameObject;
+        selectInstruction(IngredientManager.InstructionTypes[Random.Range(0, IngredientManager.InstructionTypes.Count - 1)]);
     }
     bool isClick()
     {
@@ -45,7 +48,7 @@ public class Robot : MonoBehaviour
 
             if (Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(0))
             {
-                yield return new WaitForSeconds(0.1f);
+                yield return new WaitForSeconds(0.2f);
                 isSelecting = false;
                 instructionSelectionPanel.SetActive(isSelecting);
             }
@@ -69,28 +72,28 @@ public class Robot : MonoBehaviour
             }
 
         }
-        if (Input.GetMouseButtonDown(1))
-        {
-            if (!isSelecting && isClick())
-            {
-                //Debug.Log("right");
-                isSelecting = true;
-                instructionSelectionPanel.SetActive(isSelecting);
-            }
-        }
+        //if (Input.GetMouseButtonDown(1))
+        //{
+        //    if (!isSelecting && isClick())
+        //    {
+        //        //Debug.Log("right");
+        //        isSelecting = true;
+        //        instructionSelectionPanel.SetActive(isSelecting);
+        //    }
+        //}
 
-        if (isDeciding)
-        {
-            decidingTimer -= Time.deltaTime;
-            if (decidingTimer <= 0)
-            {
-                isDeciding = false;
-            }
-            else
-            {
-                return;
-            }
-        }
+        //if (isDeciding)
+        //{
+        //    decidingTimer -= Time.deltaTime;
+        //    if (decidingTimer <= 0)
+        //    {
+        //        isDeciding = false;
+        //    }
+        //    else
+        //    {
+        //        return;
+        //    }
+        //}
 
         if (target)
         {
@@ -133,8 +136,10 @@ public class Robot : MonoBehaviour
 
 
                     visitedObjects = new List<GameObject>();
-                    startDeciding();
-                   // decideNextTarget();
+                    // startDeciding();
+
+                    selectInstruction( IngredientManager.InstructionTypes[Random.Range(0, IngredientManager.InstructionTypes.Count - 1)]);
+                    decideNextTarget();
                 }
                 else
                 {
@@ -164,12 +169,20 @@ public class Robot : MonoBehaviour
         instruction = ins;
         visitedObjects = new List<GameObject>();
 
-        startDeciding();
+        //startDeciding();
 
 
+        decideNextTarget();
 
         isSelecting = false;
         instructionSelectionPanel.SetActive(isSelecting);
+        Sprite image = Resources.Load<Sprite>("instruction/" + ins);
+        if (!image)
+        {
+            Debug.Log(" no instruction image " + ins);
+        }
+        currentInstructionImage.sprite = image;
+        currentInstructionImage.gameObject.SetActive(true);
     }
 
     void decideNextTarget()
@@ -190,12 +203,12 @@ public class Robot : MonoBehaviour
     bool isDeciding = false;
     float decidingTime = 2f;
     float decidingTimer = 0;
-    void startDeciding()
-    {
-        isDeciding = true;
-        chatObject.show("What to take");
-        decidingTimer = decidingTime;
-    }
+    //void startDeciding()
+    //{
+    //    isDeciding = true;
+    //    chatObject.show("What to take");
+    //    decidingTimer = decidingTime;
+    //}
 
     List<GameObject> visitedObjects = new List<GameObject>();
 

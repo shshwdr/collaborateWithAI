@@ -2,6 +2,7 @@ using Pool;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Utencil : MonoBehaviour
 {
@@ -12,7 +13,7 @@ public class Utencil : MonoBehaviour
     List<GameObject> ingredients = new List<GameObject>();
     List<string> ingredientTypes = new List<string>();
 
-
+    public Transform childParent;
 
     public ChatBox chatObject;
 
@@ -20,7 +21,7 @@ public class Utencil : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        GetComponentInChildren<SpriteRenderer>().sprite = IngredientManager.getUtencilImage(utencilType);
     }
 
     // Update is called once per frame
@@ -44,7 +45,7 @@ public class Utencil : MonoBehaviour
         ingredientTypes.Add(go.GetComponent<Ingredient>().ingredientType);
 
 
-        go.transform.parent = transform;
+        go.transform.parent = childParent;
         go.transform.localPosition = new Vector3(Random.Range(-0.2f, 0.2f), Random.Range(-0.2f, 0.2f), 0);
         return true;
     }
@@ -75,14 +76,14 @@ public class Utencil : MonoBehaviour
 
         //    orderTransform = OrderManager.Instance.tryRemove(res);
         //}
-        var dish = Instantiate(dishPrefab,transform.position,Quaternion.identity,transform);
+        var dish = Instantiate(dishPrefab, childParent.position,Quaternion.identity, childParent);
 
         dish.GetComponent<Dish>().init(res, orderTransform);
     }
 
     private void OnMouseUpAsButton()
     {
-        if (ingredients.Count > 0)
+        if (ingredients.Count > 0 && GetComponentInChildren<Dish>()==null)
         {
             cook();
         }

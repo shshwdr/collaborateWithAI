@@ -117,7 +117,7 @@ public class OrderManager : Singleton<OrderManager>
     {
         dishes = new List<DishData>();
         addOrder();
-        cells = GameObject.FindObjectsOfType<OrderCell>(true);
+        //cells = GameObject.FindObjectsOfType<OrderCell>(true);
     }
 
 

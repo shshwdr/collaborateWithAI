@@ -10,11 +10,7 @@ public class Ingredient : MonoBehaviour
     public void init(string type)
     {
         ingredientType = type;
-        var sprite = Resources.Load<Sprite>("ingredient/" + type);
-        if (!sprite)
-        {
-            Debug.LogError("failed to find ingredient image " + type);
-        }
+        var sprite = IngredientManager.getIngredientImage(type);
         GetComponentInChildren<SpriteRenderer>().sprite = sprite;
 
     }
