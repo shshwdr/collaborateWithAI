@@ -163,6 +163,7 @@ public class Robot : MonoBehaviour
         else
         {
 
+            visitedObjects = new List<GameObject>();
             decideNextTarget();
         }
     }
