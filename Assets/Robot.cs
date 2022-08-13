@@ -75,6 +75,10 @@ public class Robot : MonoBehaviour
 
                     holdIngredent = null;
                     target = null;
+
+
+                    visitedObjects = new List<GameObject>();
+
                     decideNextTarget();
                 }
                 else
@@ -102,7 +106,7 @@ public class Robot : MonoBehaviour
         decideNextTarget();
 
 
-        isSelecting = !isSelecting;
+        isSelecting = false;
         instructionSelectionPanel.SetActive(isSelecting);
     }
 

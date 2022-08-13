@@ -85,7 +85,7 @@ public class IngredientManager : Singleton<IngredientManager>
                 return reci[reci.Count - 1];
             }
         }
-        return "failed";
+        return null;
     }
 
     GameObject initIngredient(string ing)
@@ -103,7 +103,7 @@ public class IngredientManager : Singleton<IngredientManager>
     {
         utencils = GameObject.FindObjectsOfType<Utencil>();
         ingredientToInstructions["egg"] = new List<string>() { "round", "yellow" };
-        ingredientToInstructions["tomato"] = new List<string>() { "round", "red" };
+        ingredientToInstructions["apple"] = new List<string>() { "round", "red" };
         ingredientToInstructions["onion"] = new List<string>() { "round", "yellow" };
 
         recipe["pan"] = new List<List<string>>()
