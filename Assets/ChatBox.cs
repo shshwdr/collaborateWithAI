@@ -22,6 +22,13 @@ public class ChatBox : MonoBehaviour
         gameObject.SetActive(true);
     }
 
+    public void hide()
+    {
+
+        gameObject.SetActive(false);
+        textTimer = -1;
+    }
+
     // Update is called once per frame
     void Update()
     {

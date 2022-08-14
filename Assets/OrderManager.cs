@@ -105,7 +105,7 @@ public class OrderManager : Singleton<OrderManager>
         for (int i = 0; i < IngredientManager.recipeByName[dishString].Count - 1; i++)
         {
             var ingre = IngredientManager.recipeByName[dishString][i];
-            ingredientToSelect.Add(new IngredientToSelectData(ingre, dishData));
+           // ingredientToSelect.Add(new IngredientToSelectData(ingre, dishData));
         }
 
 
@@ -260,7 +260,6 @@ public class OrderManager : Singleton<OrderManager>
     {
         var cell = cells[index];
         cell.playCookingAnimation();
-        cell.success();
         utencilByName[cell.dishData.utensilType].playCookingAnimation();
     }
     void stopCellAnimation(int index)
@@ -269,17 +268,27 @@ public class OrderManager : Singleton<OrderManager>
         cell.stopCookingAnimation();
         //cell.success();
         utencilByName[cell.dishData.utensilType].stopCookingAnimation();
+
+
+       // cell.success();
     }
 
+    public void removeDishFail(DishData dish)
+    {
 
-        //void remove(int index)
-        //{
+        var index = dishes.FindIndex(x => x.time == dish.time);
+        var cell = cells[index];
+        cell.removeCellWithAnim(false);
+    }
 
-    //    EventPool.Trigger("finishOrder", dishes[index].name);
-    //    dishes.RemoveAt(index);
-    //    EventPool.Trigger("updateOrder");
-    //}
-    public void remove(DishData data)
+    public void removeDishSuccess(DishData dish)
+    {
+
+        var index = dishes.FindIndex(x => x.time == dish.time);
+        var cell = cells[index];
+        cell.removeCellWithAnim(true);
+    }
+    public void fullyRemoveDish(DishData data)
         {
             var index = dishes.FindIndex(x => x.time == data.time && x.name == data.name);
             if (index == -1)
@@ -290,22 +299,15 @@ public class OrderManager : Singleton<OrderManager>
 
         stopCellAnimation(index);
 
+
             var dishString = data.name;
-            int selectionIndexToBeDecrease = 0;
             for (int i = 0; i < IngredientManager.recipeByName[dishString].Count - 1; i++)
             {
                 var ingre = IngredientManager.recipeByName[dishString][i];
-                var removeIndex = ingredientToSelect.FindIndex(x => x.ingredient == ingre && x.dishData.time == data.time);
-                //if (removeIndex <= currentSelectIngredientIndex)
-                //{
-                //    selectionIndexToBeDecrease++;
-                //}
-                ingredientToSelect.RemoveAt(removeIndex);
+                //var removeIndex = ingredientToSelect.FindIndex(x => x.ingredient == ingre && x.dishData.time == data.time);
+                //ingredientToSelect.RemoveAt(removeIndex);
             }
-            currentSelectIngredientIndex -= selectionIndexToBeDecrease;
 
-
-            dishes.RemoveAt(index);
 
 
             EventPool.Trigger("updateOrder");
@@ -314,39 +316,7 @@ public class OrderManager : Singleton<OrderManager>
 
 
 
-        int currentSelectIngredientIndex = 0;
-        public string findNextIngredient()
-        {
-            int test = 10;
-            while (test > 0)
-            {
-
-
-                if (ingredientToSelect.Count <= currentSelectIngredientIndex)
-                {
-                    currentSelectIngredientIndex = 0;
-                }
-                if (currentSelectIngredientIndex < 0)
-                {
-                    Debug.LogError("should not get lower than 0");
-                    currentSelectIngredientIndex = 0;
-                }
-                var selection = ingredientToSelect[currentSelectIngredientIndex].ingredient;
-
-                currentSelectIngredientIndex++;
-
-                var ingredientExist = IngredientManager.Instance.doesIngredientHasCount(selection);
-                if (ingredientExist)
-                {
-                    return selection;
-
-                }
-                test--;
-            }
-
-
-            return IngredientManager.Instance.findIngredientWithCount();
-        }
+        
         public Vector3 getDishCellPosition(DishData data)
         {
             var index = dishes.FindIndex(x => x.time == data.time);
@@ -392,6 +362,6 @@ public class OrderManager : Singleton<OrderManager>
         }
     }
 
-    public List<IngredientToSelectData> ingredientToSelect = new List<IngredientToSelectData>();
+   // public List<IngredientToSelectData> ingredientToSelect = new List<IngredientToSelectData>();
 
 }

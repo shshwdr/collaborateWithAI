@@ -9,6 +9,8 @@ public class Hud : MonoBehaviour
     int score = 0;
     public Text scoreText;
     public Button pauseButton;
+
+    public GameObject scoreAnim;
     // Start is called before the first frame update
     void Awake()
     {
@@ -25,7 +27,10 @@ public class Hud : MonoBehaviour
     void finishOrder(string dishName)
     {
         score += 10;
-        scoreText.text = score;
+        scoreText.text = score.ToString();
+
+        var go = Instantiate(scoreAnim, scoreText.transform.position, Quaternion.identity, scoreText.transform.parent);
+        Destroy(go, 1);
     }
 
     // Update is called once per frame

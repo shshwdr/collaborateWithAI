@@ -1,3 +1,4 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -28,11 +29,25 @@ public class Ingredient : MonoBehaviour
     float time;
     Vector3 startPosition;
     public float moveSpeed = 2;
+
+    Transform pot;
     public void throwToTrash()
     {
         startPosition = transform.position;
         startThrow = true;
         trashPosition = GameObject.FindObjectOfType<RubishBin>().transform.position;
+    }
+    public void throwToPot(Transform pot, int count)
+    {
+        this.pot = pot;
+        startPosition = transform.position;
+        startPutIntoPot = true;
+        trashPosition = pot.position + (count == 1?new Vector3(-1,0,0): new Vector3(1, 0, 0));
+    }
+
+    public void startToFry()
+    {
+        startFry = true;
     }
 
     public bool canPick()
@@ -44,6 +59,9 @@ public class Ingredient : MonoBehaviour
     {
         _canPick = false;
     }
+
+    bool startPutIntoPot;
+    bool startFry;
 
     // Update is called once per frame
     void Update()
@@ -60,7 +78,28 @@ public class Ingredient : MonoBehaviour
 
                 SFXManager.Instance.playthrowGarbage();
                 Destroy(gameObject);
+                GameObject.FindObjectOfType<RubishBin>().playAnim();
+
             }
+        }
+        if (startPutIntoPot && time <= 1)
+        {
+
+            time += Time.deltaTime * moveSpeed;
+            Vector3 pos = Vector3.Lerp(startPosition, trashPosition, time);
+            pos.y += curve.Evaluate(time);
+            transform.position = pos;
+
+            if (time >= 1)
+            {
+                SFXManager.Instance.playthrowPot();
+                pot.GetComponent<Utencil>().finishAddIngredient();
+            }
+        }
+
+        if (startFry)
+        {
+            transform.DOLocalJump(Vector3.zero, Random.Range(1f, 2f), Random.Range(2, 4), 1);
         }
     }
 }

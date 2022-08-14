@@ -10,6 +10,7 @@ public class SFXManager : Singleton<SFXManager>
     [SerializeField] AudioClip buttonClick;
     [SerializeField] AudioClip[] ouch;
     [SerializeField] AudioClip throwGarbage;
+    [SerializeField] AudioClip throwPot;
     [SerializeField] AudioClip foodDeliver;
     [SerializeField] AudioClip customerLeave;
     [SerializeField] AudioClip customerArrive;
@@ -34,6 +35,13 @@ public class SFXManager : Singleton<SFXManager>
         if (throwGarbage)
         {
             audioSource.PlayOneShot(throwGarbage);
+        }
+    }
+    public void playthrowPot()
+    {
+        if (throwPot)
+        {
+            audioSource.PlayOneShot(throwPot);
         }
     }
     public void playfoodDeliver()

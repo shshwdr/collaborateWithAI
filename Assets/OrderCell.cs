@@ -1,3 +1,4 @@
+using Doozy.Engine.UI;
 using System.Collections;
 using System.Collections.Generic;
 //using UnityEditor.Animations;
@@ -62,6 +63,9 @@ public class OrderCell : MonoBehaviour
 
     public void init(DishData data)
     {
+
+        chatBox.hide();
+        GetComponent<UIView>().Show();
         dish = data.name;
         dishData = data;
         dishString.text = dish;
@@ -108,20 +112,64 @@ public class OrderCell : MonoBehaviour
         }
     }
 
-    public void success()
+    void success()
     {
         sadFace.gameObject.SetActive(false);
         happyFace.gameObject.SetActive(true);
 
         background.sprite = happyBackground;
+
+        List<string> succeedWords = new List<string>()
+        {
+            "Yummy Yummy!",
+            "This looks tasty!",
+            "Smells good!",
+
+        };
+
+
+        chatBox.show(succeedWords[Random.Range(0, succeedWords.Count)]);
     }
 
-    public void fail()
+    void fail()
     {
         //sadFace.gameObject.SetActive(false);
         //happyFace.gameObject.SetActive(true);
 
         background.sprite = angryBackground;
+
+        GameObject.FindObjectOfType<GameManager>().missAnOrder();
+
+        List<string> failWords = new List<string>()
+        {
+            "WHERE IS MY FOOD???",
+            "I'm starving!",
+            "This is insanely slow!",
+
+        };
+
+
+        chatBox.show(failWords[Random.Range(0, failWords.Count)]);
+    }
+
+    public void removeCellWithAnim(bool succeed)
+    {
+        if (succeed)
+        {
+            success();
+        }
+        else
+        {
+            fail();
+        }
+        GetComponent<UIView>().Hide();
+        Invoke("fullyRemove", 1f);
+    }
+
+    void fullyRemove()
+    {
+
+        OrderManager.Instance.fullyRemoveDish(dishData);
     }
 
     // Update is called once per frame
@@ -135,9 +183,9 @@ public class OrderCell : MonoBehaviour
         if (timeDiff > dishData.patienceTime)
         {
             //this one need to leave now
-            OrderManager.Instance.remove(dishData);
+            OrderManager.Instance.removeDishFail(dishData);
             SFXManager.Instance.playcustomerLeave();
-
+            isPreSuccess = true;
         }
         else
         {

@@ -130,9 +130,11 @@ public class Utencil : MonoBehaviour
     {
         
     }
+
+    bool isCooking = false;
     bool isInUse()
     {
-        return GetComponentInChildren<Dish>();
+        return isCooking;
     }
 
     public bool addIngredient(GameObject go)
@@ -148,17 +150,30 @@ public class Utencil : MonoBehaviour
         IngredientManager.Instance.removeIngredient(go);
 
         go.transform.parent = childParent;
-        go.transform.localPosition = new Vector3(Random.Range(-0.2f, 0.2f), Random.Range(-0.2f, 0.2f), 0);
+        //go.transform.localPosition = new Vector3(Random.Range(-0.2f, 0.2f), Random.Range(-0.2f, 0.2f), 0);
+
+        go.GetComponent<Ingredient>().throwToPot(childParent,ingredients.Count);
+        return true;
+    }
+
+
+    public void finishAddIngredient() {
+
+        if (isInUse())
+        {
+            return;
+        }
 
         if (canCook())
         {
-            cook();
-        }else if (ingredients.Count >= 2)
+            startCook();
+            //cook();
+        }
+        else if (ingredients.Count >= 2)
         {
             OnMouseUpAsButton();
         }
 
-        return true;
     }
 
     public void finishThrow()
@@ -189,20 +204,74 @@ public class Utencil : MonoBehaviour
         return false;
     }
 
-    void cook()
+    //void cook()
+    //{
+    //    var res = IngredientManager.cook(utencilType, ingredientTypes);
+    //    Debug.Log("cook "+res);
+    //    //if (res!=null)
+    //    //{
+
+    //    //    chatObject.show("Cooked " + res);
+    //    //}
+    //    //else
+    //    //{
+
+    //    //    chatObject.show("Cook failed!");
+    //    //}
+    //    foreach (var ingre in ingredients)
+    //    {
+    //        //IngredientManager.Instance.removeIngredient(ingre);
+    //        Destroy(ingre);
+    //    }
+    //    ingredientTypes.Clear();
+    //    ingredients.Clear();
+    //    DishData orderTransform = new DishData();
+    //    if (res!=null)
+    //    {
+
+    //        orderTransform = OrderManager.Instance.tryRemove(res);
+    //    }
+    //    var dish = Instantiate(dishPrefab, childParent.position,Quaternion.identity, childParent);
+
+    //    dish.GetComponent<Dish >().init(res, orderTransform);
+
+    //    clearNote();
+    //    updateNote();
+
+    //}
+
+    DishData currentCookingDish;
+    void startCook()
     {
+        isCooking = true;
+        clearNote();
+        updateNote();
+
         var res = IngredientManager.cook(utencilType, ingredientTypes);
-        Debug.Log("cook "+res);
-        if (res!=null)
-        {
+        currentCookingDish = OrderManager.Instance.tryRemove(res);
 
-            chatObject.show("Cooked " + res);
-        }
-        else
-        {
 
-            chatObject.show("Cook failed!");
+        if(utencilType == "pan")
+        {
+            foreach(var ing in ingredients)
+            {
+                ing.GetComponent<Ingredient>().startToFry();
+            }
         }
+
+        Debug.Log("cooking " + res);
+
+        Invoke("finishCook", cookTime);
+    }
+    public float cookTime = 2;
+
+    void finishCook()
+    {
+        isCooking = false;
+        var res = IngredientManager.cook(utencilType, ingredientTypes);
+
+        Debug.Log("cooked " + res);
+
         foreach (var ingre in ingredients)
         {
             //IngredientManager.Instance.removeIngredient(ingre);
@@ -210,19 +279,10 @@ public class Utencil : MonoBehaviour
         }
         ingredientTypes.Clear();
         ingredients.Clear();
-        DishData orderTransform = new DishData();
-        if (res!=null)
-        {
+        var dish = Instantiate(dishPrefab, staticUtensil.transform.position, Quaternion.identity, staticUtensil.transform);
 
-            orderTransform = OrderManager.Instance.tryRemove(res);
-        }
-        var dish = Instantiate(dishPrefab, childParent.position,Quaternion.identity, childParent);
-
-        dish.GetComponent<Dish>().init(res, orderTransform);
-
-        clearNote();
-        updateNote();
-
+        dish.GetComponent<Dish>().init(res, currentCookingDish);
+        currentCookingDish = new DishData();
     }
 
     private void OnMouseUpAsButton()
