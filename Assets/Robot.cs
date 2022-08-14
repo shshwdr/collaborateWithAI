@@ -134,6 +134,7 @@ public class Robot : MonoBehaviour
                 else
                 {
                     //pickup item
+                    SFXManager.Instance.playCollectIngredient();
                     target.GetComponent<Ingredient>().pick();
                     holdIngredent = target;
                     target.transform.parent = transform;
@@ -213,6 +214,9 @@ public class Robot : MonoBehaviour
 
     void slap()
     {
+
+        SFXManager.Instance.playslap();
+        SFXManager.Instance.playOuch();
         if (holdIngredent)
         {
             if (target.GetComponent<RubishBin>())

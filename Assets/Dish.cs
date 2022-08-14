@@ -117,6 +117,8 @@ public class Dish : MonoBehaviour
             if (dir.magnitude < 0.1f)
             {
                 Destroy(gameObject);
+
+                SFXManager.Instance.playfoodDeliver();
                 OrderManager.Instance.remove(target);
             }
             else

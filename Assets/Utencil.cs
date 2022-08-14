@@ -21,7 +21,7 @@ public class Utencil : MonoBehaviour
 
     public List<Image> noteImages;
 
-
+    AudioSource audioSource;
 
 
     public GameObject staticUtensil;
@@ -31,12 +31,14 @@ public class Utencil : MonoBehaviour
     {
         staticUtensil.SetActive(false);
         animStaticUtensil.gameObject.SetActive(true);
+        audioSource.Play();
     }
 
     public void stopCookingAnimation()
     {
         staticUtensil.SetActive(true);
         animStaticUtensil.gameObject.SetActive(false);
+        audioSource.Stop();
     }
 
     public bool hasIngredient(string ingredient)
@@ -119,6 +121,7 @@ public class Utencil : MonoBehaviour
     {
         GetComponentInChildren<SpriteRenderer>().sprite = IngredientManager.getUtencilImage(utencilType);
         EventPool.OptIn("updateNote", updateNote);
+        audioSource = GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -149,8 +152,10 @@ public class Utencil : MonoBehaviour
         if (canCook())
         {
             cook();
+        }else if (ingredients.Count >= 2)
+        {
+            OnMouseUpAsButton();
         }
-
 
         return true;
     }
@@ -225,10 +230,11 @@ public class Utencil : MonoBehaviour
         foreach (var ingre in ingredients)
         {
             IngredientManager.Instance.removeIngredient(ingre);
-
-            Destroy(ingre);
+            ingre.GetComponent<Ingredient>().throwToTrash();
+            //Destroy(ingre);
         }
         ingredients.Clear();
         ingredientTypes.Clear();
+
     }
 }

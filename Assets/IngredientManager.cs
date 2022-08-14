@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Animations;
+//using UnityEditor.Animations;
 using UnityEngine;
 
 
@@ -119,16 +119,16 @@ public class IngredientManager : Singleton<IngredientManager>
         }
         return sprite;
     }
-    public static AnimatorController getUtencilAnimation(string str)
-    {
+    //public static AnimatorController getUtencilAnimation(string str)
+    //{
 
-        var sprite = Resources.Load<AnimatorController>("utencil/" + str);
-        if (!sprite)
-        {
-            Debug.LogError("failed to find utencil image " + str);
-        }
-        return sprite;
-    }
+    //    var sprite = Resources.Load<AnimatorController>("utencil/" + str);
+    //    if (!sprite)
+    //    {
+    //        Debug.LogError("failed to find utencil image " + str);
+    //    }
+    //    return sprite;
+    //}
 
     public static string cook(string utencil, List<string> ingredient)
     {

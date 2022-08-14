@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Animations;
+//using UnityEditor.Animations;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -91,7 +91,7 @@ public class OrderCell : MonoBehaviour
 
         customerImage.sprite = OrderManager.Instance.customerSprites[data.customerIndex];
 
-        animator.runtimeAnimatorController = IngredientManager.getUtencilAnimation(recipe[recipe.Count - 1]);
+       // animator.runtimeAnimatorController = IngredientManager.getUtencilAnimation(recipe[recipe.Count - 1]);
         //dishString.text += recipe[recipe.Count - 1] + " ";
     }
 
@@ -136,6 +136,8 @@ public class OrderCell : MonoBehaviour
         {
             //this one need to leave now
             OrderManager.Instance.remove(dishData);
+            SFXManager.Instance.playcustomerLeave();
+
         }
         else
         {

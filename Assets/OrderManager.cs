@@ -111,6 +111,7 @@ public class OrderManager : Singleton<OrderManager>
 
         EventPool.Trigger("updateOrder");
         EventPool.Trigger("updateNote");
+        SFXManager.Instance.playcustomerArrive();
     }
 
     void addOrderByUtensil(string utensil)
@@ -280,7 +281,7 @@ public class OrderManager : Singleton<OrderManager>
     //}
     public void remove(DishData data)
         {
-            var index = dishes.FindIndex(x => x.time == data.time);
+            var index = dishes.FindIndex(x => x.time == data.time && x.name == data.name);
             if (index == -1)
             {
                 Debug.LogError("remove dish wrong");

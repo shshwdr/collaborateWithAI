@@ -22,6 +22,18 @@ public class Ingredient : MonoBehaviour
     {
         
     }
+    bool startThrow = false;
+    public AnimationCurve curve;
+    Vector3 trashPosition;
+    float time;
+    Vector3 startPosition;
+    public float moveSpeed = 2;
+    public void throwToTrash()
+    {
+        startPosition = transform.position;
+        startThrow = true;
+        trashPosition = GameObject.FindObjectOfType<RubishBin>().transform.position;
+    }
 
     public bool canPick()
     {
@@ -36,6 +48,19 @@ public class Ingredient : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (startThrow)
+        {
+
+            time += Time.deltaTime* moveSpeed;
+            Vector3 pos = Vector3.Lerp(startPosition, trashPosition, time);
+            pos.y += curve.Evaluate(time);
+            transform.position = pos;
+            if (time >= 1)
+            {
+
+                SFXManager.Instance.playthrowGarbage();
+                Destroy(gameObject);
+            }
+        }
     }
 }

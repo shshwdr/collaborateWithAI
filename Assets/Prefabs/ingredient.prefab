@@ -131,6 +131,40 @@ MonoBehaviour:
   _canPick: 1
   ingredientRender: {fileID: 463999302022931985}
   shadowRender: {fileID: 2695216021672872033}
+  curve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.44024357
+      value: 0.9478962
+      inSlope: -0.040813733
+      outSlope: -0.040813733
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.42915928
+    - serializedVersion: 3
+      time: 0.9916646
+      value: 0.004717827
+      inSlope: -1.4516984
+      outSlope: -1.4516984
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.14318016
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  moveSpeed: 2
 --- !u!1 &8943799702054098554
 GameObject:
   m_ObjectHideFlags: 0
