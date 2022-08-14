@@ -160,6 +160,11 @@ public class Utencil : MonoBehaviour
         return true;
     }
 
+    public void finishThrow()
+    {
+
+    }
+
 
     bool canCook()
     {

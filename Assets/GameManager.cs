@@ -10,6 +10,13 @@ public class GameManager : MonoBehaviour
     {
         IngredientManager.Instance.initBoard();
         OrderManager.Instance.init();
+
+
+        GameObject.FindObjectOfType<Popup>(true).Init("test", () =>
+        {
+        });
+
+        GameObject.FindObjectOfType<Popup>(true).showView();
     }
 
     // Update is called once per frame
