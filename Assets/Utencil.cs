@@ -2,6 +2,7 @@ using Pool;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class Utencil : MonoBehaviour
@@ -230,9 +231,12 @@ public class Utencil : MonoBehaviour
         //{
         //    cook();
         //}
-
-        //clear ingredients
-        foreach (var ingre in ingredients)
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            return;
+        }
+            //clear ingredients
+            foreach (var ingre in ingredients)
         {
             IngredientManager.Instance.removeIngredient(ingre);
             ingre.GetComponent<Ingredient>().throwToTrash();

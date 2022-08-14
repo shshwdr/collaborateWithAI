@@ -1,0 +1,2 @@
+HEX Color: #363744
+Opacity: 80%

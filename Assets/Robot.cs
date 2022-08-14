@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class Robot : MonoBehaviour
@@ -21,7 +22,15 @@ public class Robot : MonoBehaviour
 
     public ChatBox chatObject;
 
+
+    float speedupScale = 2;
+    bool isSpeedUp;
+    public float speedupTime = 3;
+    float speedupTimer = 0;
+
     LineRenderer path;
+
+    Animator animator;
 
     public List<string> currentWorkingIngredient()
     {
@@ -43,6 +52,7 @@ public class Robot : MonoBehaviour
         path = GetComponentInChildren<LineRenderer>();
         rubishBin = GameObject.FindObjectOfType<RubishBin>().gameObject;
         smartSelectInstruction();
+        animator = GetComponentInChildren<Animator>();
     }
     bool isClick()
     {
@@ -62,14 +72,43 @@ public class Robot : MonoBehaviour
     void Update()
     {
 
-        if (Input.GetMouseButtonDown(0))
+        if (!EventSystem.current.IsPointerOverGameObject())
         {
-            if (isClick())
+            if (Input.GetMouseButtonDown(0))
             {
-                slap();
+
+                if (isClick())
+                {
+                    slap();
+                }
+
             }
 
+            if (Input.GetMouseButtonDown(1))
+            {
+
+                if (isClick())
+                {
+                    if (!isSpeedUp)
+                    {
+
+                        speedUpSlap();
+                    }
+                }
+
+            }
         }
+
+        if (isSpeedUp)
+        {
+            speedupTimer += Time.deltaTime;
+            if (speedupTimer > speedupTime)
+            {
+                speedupTimer = 0;
+                stopSpeedUp();
+            }
+        }
+        
         //target can be ingredient or utencil(bin)
         if (target)
         {
@@ -141,13 +180,16 @@ public class Robot : MonoBehaviour
                     target = null;
                     idealTarget = null;
                     target = IngredientManager.Instance.selectUtencil(this, visitedObjects);
+
+                    //hide the chip on top of monster
+                    currentInstructionImage.transform.parent.gameObject.SetActive(false);
                 }
             }
             else
             {
 
                 var dir = (target.transform.position - transform.position).normalized;
-                transform.Translate(dir * moveSpeed * Time.deltaTime);
+                transform.Translate(dir * moveSpeed * Time.deltaTime * (isSpeedUp?speedupScale:1));
             }
         }
         else
@@ -215,6 +257,7 @@ public class Robot : MonoBehaviour
     void slap()
     {
 
+
         SFXManager.Instance.playslap();
         SFXManager.Instance.playOuch();
         if (holdIngredent)
@@ -248,5 +291,29 @@ public class Robot : MonoBehaviour
                 Debug.LogError("when slap, ingredient instruction is null");
             }
         }
+
+        var go = Instantiate(slapObject, transform.position, Quaternion.identity, transform);
     }
+
+    void speedUpSlap()
+    {
+
+        SFXManager.Instance.playslap();
+        SFXManager.Instance.playOuch();
+
+        isSpeedUp = true;
+        animator.speed = speedupScale;
+
+        var go = Instantiate(slapObject,transform.position,Quaternion.identity,transform);
+        go.GetComponent<Slap>().useHurry();
+    }
+    void stopSpeedUp()
+    {
+
+        isSpeedUp = false;
+        animator.speed = 1;
+
+    }
+
+    public GameObject slapObject;
 }

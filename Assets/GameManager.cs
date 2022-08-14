@@ -5,6 +5,10 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+
+    int maxMissedOrder = 3;
+    int missedOrder = 0;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -12,11 +16,11 @@ public class GameManager : MonoBehaviour
         OrderManager.Instance.init();
 
 
-        GameObject.FindObjectOfType<Popup>(true).Init("test", () =>
-        {
-        });
+        //GameObject.FindObjectOfType<Popup>(true).Init("test", () =>
+        //{
+        //});
 
-        GameObject.FindObjectOfType<Popup>(true).showView();
+        //GameObject.FindObjectOfType<Popup>(true).showView();
     }
 
     // Update is called once per frame
