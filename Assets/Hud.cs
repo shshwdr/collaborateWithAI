@@ -25,7 +25,7 @@ public class Hud : MonoBehaviour
     void finishOrder(string dishName)
     {
         score += 10;
-        scoreText.text = "Score: " + score;
+        scoreText.text = score;
     }
 
     // Update is called once per frame
