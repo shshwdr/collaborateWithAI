@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Animations;
 using UnityEngine;
 
 
@@ -112,6 +113,16 @@ public class IngredientManager : Singleton<IngredientManager>
     {
 
         var sprite = Resources.Load<Sprite>("utencil/" + str);
+        if (!sprite)
+        {
+            Debug.LogError("failed to find utencil image " + str);
+        }
+        return sprite;
+    }
+    public static AnimatorController getUtencilAnimation(string str)
+    {
+
+        var sprite = Resources.Load<AnimatorController>("utencil/" + str);
         if (!sprite)
         {
             Debug.LogError("failed to find utencil image " + str);
@@ -330,6 +341,10 @@ public class IngredientManager : Singleton<IngredientManager>
             if (visited.Contains(ingre))
             {
                 continue;
+            }
+            if (!ingre || !ingre.GetComponent<Ingredient>())
+            {
+                Debug.LogError("it is destroyed "+ !ingre+" "+ !ingre.GetComponent<Ingredient>());
             }
             var ingreType = ingre.GetComponent<Ingredient>().ingredientType;
             if (!ingredientToInstructions.ContainsKey(ingreType))

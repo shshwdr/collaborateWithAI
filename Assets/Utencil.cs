@@ -17,11 +17,108 @@ public class Utencil : MonoBehaviour
 
     public ChatBox chatObject;
 
+    public DishData note;
+
+    public List<Image> noteImages;
+
+
+
+
+    public GameObject staticUtensil;
+    public Animator animStaticUtensil;
+
+    public void playCookingAnimation()
+    {
+        staticUtensil.SetActive(false);
+        animStaticUtensil.gameObject.SetActive(true);
+    }
+
+    public void stopCookingAnimation()
+    {
+        staticUtensil.SetActive(true);
+        animStaticUtensil.gameObject.SetActive(false);
+    }
+
+    public bool hasIngredient(string ingredient)
+    {
+        foreach (Transform c in childParent.transform)
+        {
+            if (!c.GetComponent<Ingredient>())
+            {
+                continue;
+            }
+            if (ingredient == c.GetComponent<Ingredient>().ingredientType)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    void clearNote()
+    {
+        note = new DishData();
+    }
+
+    void updateNote()
+    {
+        int alreadyFinishedIngredient = 0;
+        foreach(var data in OrderManager.Instance.dishes)
+        {
+            if (data.isPreRemoved)
+            {
+                continue;
+            }
+            if(data.utensilType == utencilType)
+            {
+                if (note.name == null)
+                {
+
+                    note = data;
+                }
+                //else
+                //{
+                //    int tempFinishedIngredient = 0;
+                //    foreach (Transform c in childParent.transform)
+                //    {
+                //        if (data.ingredients.Contains(c.GetComponent<Ingredient>().ingredientType))
+                //        {
+                //            tempFinishedIngredient++;
+                //        }
+                //    }
+                //    if (tempFinishedIngredient > alreadyFinishedIngredient)
+                //    {
+                //        note = data;
+                //    }
+                //}
+
+            }
+        }
+        //update note image
+        int i = 0;
+        if (note.name == null)
+        {
+            return;
+        }
+        for (; i < note.ingredients.Count; i++)
+        {
+            noteImages[i].gameObject.SetActive(true);
+            noteImages[i].sprite = IngredientManager.getIngredientImage(note.ingredients[i]);
+        }
+        for (; i < noteImages.Count; i++)
+        {
+            noteImages[i].gameObject.SetActive(false);
+        }
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate(noteImages[0].transform.parent.GetComponent<RectTransform>());
+    }
+
 
     // Start is called before the first frame update
     void Start()
     {
         GetComponentInChildren<SpriteRenderer>().sprite = IngredientManager.getUtencilImage(utencilType);
+        EventPool.OptIn("updateNote", updateNote);
     }
 
     // Update is called once per frame
@@ -38,12 +135,13 @@ public class Utencil : MonoBehaviour
     {
         if (isInUse())
         {
-            chatObject.show("Is In Use");
+            //chatObject.show("Is In Use");
             return false;
         }
         ingredients.Add(go);
         ingredientTypes.Add(go.GetComponent<Ingredient>().ingredientType);
 
+        IngredientManager.Instance.removeIngredient(go);
 
         go.transform.parent = childParent;
         go.transform.localPosition = new Vector3(Random.Range(-0.2f, 0.2f), Random.Range(-0.2f, 0.2f), 0);
@@ -110,6 +208,9 @@ public class Utencil : MonoBehaviour
         var dish = Instantiate(dishPrefab, childParent.position,Quaternion.identity, childParent);
 
         dish.GetComponent<Dish>().init(res, orderTransform);
+
+        clearNote();
+        updateNote();
 
     }
 

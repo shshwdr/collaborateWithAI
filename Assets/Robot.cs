@@ -13,19 +13,34 @@ public class Robot : MonoBehaviour
     GameObject rubishBin;
 
     public Image currentInstructionImage;
+    public Image currentIngredientImage;
 
     float pickupRange = 0.1f;
+    public string idealTarget = null;
 
-    bool isSelecting = false;
 
     public ChatBox chatObject;
 
     LineRenderer path;
+
+    public List<string> currentWorkingIngredient()
+    {
+        List<string> res = new List<string>();
+        if (holdIngredent)
+        {
+            res.Add( holdIngredent.GetComponent<Ingredient>().ingredientType);
+        }
+        if (idealTarget!=null && idealTarget!="")
+        {
+            res.Add( idealTarget);
+        }
+        return res;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
         path = GetComponentInChildren<LineRenderer>();
-        instructionSelectionPanel.SetActive(isSelecting);
         rubishBin = GameObject.FindObjectOfType<RubishBin>().gameObject;
         smartSelectInstruction();
     }
@@ -43,76 +58,44 @@ public class Robot : MonoBehaviour
         return false;
     }
 
-    IEnumerator test()
-    {
-
-            if (Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(0))
-            {
-                yield return new WaitForSeconds(0.2f);
-                isSelecting = false;
-                instructionSelectionPanel.SetActive(isSelecting);
-            }
-    }
     // Update is called once per frame
     void Update()
     {
 
-    if (isSelecting)
-        {
-            StartCoroutine(test());
-            return;
-        }
-
         if (Input.GetMouseButtonDown(0))
         {
-            if (!isSelecting && isClick())
+            if (isClick())
             {
-               // Debug.Log("slap");
                 slap();
             }
 
         }
-        //if (Input.GetMouseButtonDown(1))
-        //{
-        //    if (!isSelecting && isClick())
-        //    {
-        //        //Debug.Log("right");
-        //        isSelecting = true;
-        //        instructionSelectionPanel.SetActive(isSelecting);
-        //    }
-        //}
-
-        //if (isDeciding)
-        //{
-        //    decidingTimer -= Time.deltaTime;
-        //    if (decidingTimer <= 0)
-        //    {
-        //        isDeciding = false;
-        //    }
-        //    else
-        //    {
-        //        return;
-        //    }
-        //}
-
+        //target can be ingredient or utencil(bin)
         if (target)
         {
             path.SetPosition(0, transform.position);
             path.SetPosition(1, target.transform.position);
 
 
-            if (!holdIngredent)
+            if (!holdIngredent) //target should be ingredient
             {
+                if (!target.GetComponent<Ingredient>())
+                {
+                    Debug.LogError("when not holding, target is not ingredient either");
+                    target = null;
+                    return;
+                }
+                // if target is taken, complain and find next with same instruction
                 if (!target.GetComponent<Ingredient>().canPick())
                 {
-                    Debug.Log("already picked by another");
-                    chatObject.show("Don't take my stuff!");
-                    decideNextTarget();
+                    chatObject.show("Go away, that's my stuff!");
+                    decideNextIngredient();
                 }
             }
-
-            if ((target.transform.position - transform.position).magnitude<pickupRange)
+            //if arrive
+            if ((target.transform.position - transform.position).magnitude < pickupRange)
             {
+
                 if (holdIngredent)
                 {
                     //drop ingredient and move to next
@@ -123,9 +106,14 @@ public class Robot : MonoBehaviour
                     }
                     else
                     {
-
+                        //if the utensil is busy, go to next one
+                        if (!target.GetComponent<Utencil>())
+                        {
+                            Debug.LogError("target is not utencil");
+                        }
                         if (!target.GetComponent<Utencil>().addIngredient(holdIngredent))
                         {
+                            chatObject.show("Is In Use");
                             slap();
                             return;
                         }
@@ -138,10 +126,10 @@ public class Robot : MonoBehaviour
 
 
                     visitedObjects = new List<GameObject>();
-                    // startDeciding();
+
+                    smartDecideNextIngredientSelection();
                     startNextIngredientSelection();
-                    //smartSelectInstruction();
-                    decideNextTarget();
+                    decideNextIngredient();
                 }
                 else
                 {
@@ -149,8 +137,9 @@ public class Robot : MonoBehaviour
                     target.GetComponent<Ingredient>().pick();
                     holdIngredent = target;
                     target.transform.parent = transform;
-                    target = IngredientManager.Instance.selectUtencil(this,visitedObjects);
-                    smartDecideNextIngredientSelection();
+                    target = null;
+                    idealTarget = null;
+                    target = IngredientManager.Instance.selectUtencil(this, visitedObjects);
                 }
             }
             else
@@ -164,76 +153,47 @@ public class Robot : MonoBehaviour
         {
 
             visitedObjects = new List<GameObject>();
-            decideNextTarget();
+            decideNextIngredient();
         }
     }
 
     public void smartSelectInstruction()
     {
-        var nextIngredient = OrderManager.Instance.findNextIngredient();
-        var nextInstruction = IngredientManager.ingredientToInstructions[nextIngredient][0];
-        decideNextIngredientSelection(nextInstruction);
+        smartDecideNextIngredientSelection();
         startNextIngredientSelection();
-        //selectInstruction(nextInstruction);
     }
 
     void smartDecideNextIngredientSelection()
     {
-        var nextIngredient = OrderManager.Instance.findNextIngredient();
+        var nextIngredient = OrderManager.Instance.findNextIngredient_v2();
         var nextInstruction = IngredientManager.ingredientToInstructions[nextIngredient][0];
-        decideNextIngredientSelection(nextInstruction);
-    }
 
-    public void randomeSelectInstruction()
-    {
-
-        selectInstruction(IngredientManager.InstructionTypes[Random.Range(0, IngredientManager.InstructionTypes.Count)]);
-    }
-
-    public void decideNextIngredientSelection(string ins)
-    {
-
-        instruction = ins;
-        Sprite image = Resources.Load<Sprite>("instruction/" + ins);
+        idealTarget = nextIngredient;
+        instruction = nextInstruction;
+        Sprite image = Resources.Load<Sprite>("instruction/" + nextInstruction);
         if (!image)
         {
-            Debug.Log(" no instruction image " + ins);
+            Debug.Log(" no instruction image " + nextInstruction);
         }
         currentInstructionImage.sprite = image;
-        currentInstructionImage.gameObject.SetActive(true);
+        currentInstructionImage.transform.parent.gameObject.SetActive(true);
+        currentIngredientImage.sprite = IngredientManager.getIngredientImage(nextIngredient);
     }
+
+    //public void randomeSelectInstruction()
+    //{
+
+    //    selectInstruction(IngredientManager.InstructionTypes[Random.Range(0, IngredientManager.InstructionTypes.Count)]);
+    //}
 
     public void startNextIngredientSelection()
     {
 
         visitedObjects = new List<GameObject>();
-        decideNextTarget();
+        decideNextIngredient();
     }
-
-    public void selectInstruction(string ins)
+    void decideNextIngredient()
     {
-        instruction = ins;
-        visitedObjects = new List<GameObject>();
-
-        //startDeciding();
-
-
-        decideNextTarget();
-
-        isSelecting = false;
-        instructionSelectionPanel.SetActive(isSelecting);
-        Sprite image = Resources.Load<Sprite>("instruction/" + ins);
-        if (!image)
-        {
-            Debug.Log(" no instruction image " + ins);
-        }
-        currentInstructionImage.sprite = image;
-        currentInstructionImage.gameObject.SetActive(true);
-    }
-
-    void decideNextTarget()
-    {
-        // take some time to decide
         // find the closest item matches the instruction
 
         if (holdIngredent)
@@ -241,20 +201,13 @@ public class Robot : MonoBehaviour
             return;
         }
 
-        var selectItem = IngredientManager.Instance. selectItem(instruction, this,visitedObjects);
-        target = selectItem;
+        var selectItem = IngredientManager.Instance.selectItem(instruction, this, visitedObjects);
+        //if (selectItem)
+        {
+            target = selectItem;
+        }
 
     }
-
-    bool isDeciding = false;
-    float decidingTime = 2f;
-    float decidingTimer = 0;
-    //void startDeciding()
-    //{
-    //    isDeciding = true;
-    //    chatObject.show("What to take");
-    //    decidingTimer = decidingTime;
-    //}
 
     List<GameObject> visitedObjects = new List<GameObject>();
 
@@ -262,6 +215,12 @@ public class Robot : MonoBehaviour
     {
         if (holdIngredent)
         {
+            if (target.GetComponent<RubishBin>())
+            {
+                //if is bin, revisit
+                visitedObjects.Clear();
+            }
+
             var nextOption = IngredientManager.Instance.selectUtencil(this, visitedObjects);
             if (nextOption)
             {
@@ -278,11 +237,11 @@ public class Robot : MonoBehaviour
         {
             if (instruction != null)
             {
-                var nextOption = IngredientManager.Instance.selectItem(instruction, this, visitedObjects);
-                if (nextOption)
-                {
-                    target = nextOption;
-                }
+                decideNextIngredient();
+            }
+            else
+            {
+                Debug.LogError("when slap, ingredient instruction is null");
             }
         }
     }
