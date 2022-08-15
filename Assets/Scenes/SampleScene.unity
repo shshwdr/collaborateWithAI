@@ -389,7 +389,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2273269384917689934, guid: 0c3d42fa7c507994a934bb070a7aeeb8, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -6.43
+      value: -6.14
       objectReference: {fileID: 0}
     - target: {fileID: 2273269384917689934, guid: 0c3d42fa7c507994a934bb070a7aeeb8, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1135,7 +1135,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bd47c571b38c1c444920022f4df89a00, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxMissedOrder: 3
+  maxMissedOrder: 4
   missedOrder: 0
   isGameOver: 0
 --- !u!224 &970103394 stripped

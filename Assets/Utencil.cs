@@ -1,3 +1,4 @@
+using DG.Tweening;
 using Pool;
 using System.Collections;
 using System.Collections.Generic;
@@ -21,6 +22,7 @@ public class Utencil : MonoBehaviour
     public DishData note;
 
     public List<Image> noteImages;
+    public List<Image> checkImages;
 
     AudioSource audioSource;
 
@@ -61,6 +63,30 @@ public class Utencil : MonoBehaviour
     void clearNote()
     {
         note = new DishData();
+    }
+
+    void updateCheck()
+    {
+        int i = 0;
+        for (; i < note.ingredients.Count && i< checkImages.Count; i++)
+        {
+            var ing = note.ingredients[i];
+            if (ingredientTypes.Contains(ing) && checkImages[i] && checkImages[i].transform)
+            {
+                checkImages[i].transform.DOKill();
+                checkImages[i].transform.localScale = Vector3.zero;
+                checkImages[i].transform.DOScale(1, 0.3f);
+            }
+            else
+            {
+
+                checkImages[i].transform.localScale = Vector3.zero;
+            }
+        }
+        for(;i< checkImages.Count; i++)
+        {
+            checkImages[i].transform.localScale = Vector3.zero;
+        }
     }
 
     void updateNote()
@@ -113,7 +139,9 @@ public class Utencil : MonoBehaviour
             noteImages[i].gameObject.SetActive(false);
         }
 
-        LayoutRebuilder.ForceRebuildLayoutImmediate(noteImages[0].transform.parent.GetComponent<RectTransform>());
+        //LayoutRebuilder.ForceRebuildLayoutImmediate(noteImages[0].transform.parent.GetComponent<RectTransform>());
+
+        updateCheck();
     }
 
 
@@ -153,6 +181,7 @@ public class Utencil : MonoBehaviour
         //go.transform.localPosition = new Vector3(Random.Range(-0.2f, 0.2f), Random.Range(-0.2f, 0.2f), 0);
 
         go.GetComponent<Ingredient>().throwToPot(childParent,ingredients.Count);
+        updateCheck();
         return true;
     }
 
@@ -174,12 +203,10 @@ public class Utencil : MonoBehaviour
             OnMouseUpAsButton();
         }
 
-    }
-
-    public void finishThrow()
-    {
+        EventPool.Trigger("updateNote");
 
     }
+
 
 
     bool canCook()
@@ -251,11 +278,19 @@ public class Utencil : MonoBehaviour
         currentCookingDish = OrderManager.Instance.tryRemove(res);
 
 
-        if(utencilType == "pan")
+        //if(utencilType == "pan")
+        //{
+        //    foreach(var ing in ingredients)
+        //    {
+        //        ing.GetComponent<Ingredient>().startToFry();
+        //    }
+        //}
+        //else
         {
-            foreach(var ing in ingredients)
+
+            foreach (var ing in ingredients)
             {
-                ing.GetComponent<Ingredient>().startToFry();
+                ing.SetActive(false);
             }
         }
 
@@ -263,11 +298,12 @@ public class Utencil : MonoBehaviour
 
         Invoke("finishCook", cookTime);
     }
-    public float cookTime = 2;
+    float cookTime = 2;
 
     void finishCook()
     {
         isCooking = false;
+        stopCookingAnimation();
         var res = IngredientManager.cook(utencilType, ingredientTypes);
 
         Debug.Log("cooked " + res);
@@ -279,10 +315,12 @@ public class Utencil : MonoBehaviour
         }
         ingredientTypes.Clear();
         ingredients.Clear();
-        var dish = Instantiate(dishPrefab, staticUtensil.transform.position, Quaternion.identity, staticUtensil.transform);
-
+        var dish = Instantiate(dishPrefab, staticUtensil.transform.position, Quaternion.identity, staticUtensil.transform.parent);
+        dish.transform.localScale = staticUtensil.transform.localScale;
         dish.GetComponent<Dish>().init(res, currentCookingDish);
         currentCookingDish = new DishData();
+        Destroy(dish, cookTime);
+        EventPool.Trigger("updateNote");
     }
 
     private void OnMouseUpAsButton()

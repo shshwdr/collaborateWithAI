@@ -15,6 +15,7 @@ public struct DishData
     public List<string> ingredients;
     public List<GameObject> ingredientsOnHold;
 
+
     public void remove()
     {
         isPreRemoved = true;
@@ -25,7 +26,7 @@ public struct DishData
         this.utensilType = ing[ing.Count - 1];
         isPreRemoved = false;
         time = Time.time;
-        patienceTime = 50;
+        patienceTime = OrderManager.Instance.currentParence;
         ingredients = new List<string>();
         ingredientsOnHold = new List<GameObject>();
         for (int i = 0; i < ing.Count - 1; i++)
@@ -39,6 +40,10 @@ public struct DishData
 }
 public class OrderManager : Singleton<OrderManager>
 {
+    public int minPatience = 50;
+    public int currentParence = 100;
+    public int decreasePatienceTime = 1;
+    float decreasePatienceTimer = 0;
     public List<Sprite> customerSprites;
 
     public List<DishData> dishes;
@@ -60,7 +65,16 @@ public class OrderManager : Singleton<OrderManager>
             currentOrderTimer = 0;
             addOrder();
         }
+        if (currentParence >= minPatience)
+        {
+            decreasePatienceTimer += Time.deltaTime;
+            if (decreasePatienceTimer >= decreasePatienceTime)
+            {
+                decreasePatienceTimer = 0;
+                currentParence -= 1;
 
+            }
+        }
     }
     void addOrder()
     {
@@ -112,6 +126,15 @@ public class OrderManager : Singleton<OrderManager>
         EventPool.Trigger("updateOrder");
         EventPool.Trigger("updateNote");
         SFXManager.Instance.playcustomerArrive();
+    }
+
+    public void setDishToBePreRemoved(DishData data)
+    {
+
+        var index = dishes.FindIndex(x => x.time == data.time && x.name == data.name);
+
+        data.isPreRemoved = true;
+        dishes[index] = data;
     }
 
     void addOrderByUtensil(string utensil)
@@ -264,10 +287,10 @@ public class OrderManager : Singleton<OrderManager>
     }
     void stopCellAnimation(int index)
     {
-        var cell = cells[index];
-        cell.stopCookingAnimation();
+        //var cell = cells[index];
+        //cell.stopCookingAnimation();
         //cell.success();
-        utencilByName[cell.dishData.utensilType].stopCookingAnimation();
+        //utencilByName[cell.dishData.utensilType].stopCookingAnimation();
 
 
        // cell.success();
@@ -276,7 +299,7 @@ public class OrderManager : Singleton<OrderManager>
     public void removeDishFail(DishData dish)
     {
 
-        var index = dishes.FindIndex(x => x.time == dish.time);
+        var index = dishes.FindIndex(x => x.time == dish.time && x.name == dish.name);
         var cell = cells[index];
         cell.removeCellWithAnim(false);
     }
@@ -284,7 +307,7 @@ public class OrderManager : Singleton<OrderManager>
     public void removeDishSuccess(DishData dish)
     {
 
-        var index = dishes.FindIndex(x => x.time == dish.time);
+        var index = dishes.FindIndex(x => x.time == dish.time && x.name == dish.name);
         var cell = cells[index];
         cell.removeCellWithAnim(true);
     }
@@ -295,23 +318,24 @@ public class OrderManager : Singleton<OrderManager>
             {
                 Debug.LogError("remove dish wrong");
                 return;
-            }
-
+        }
         stopCellAnimation(index);
+        dishes.RemoveAt(index);
 
 
-            var dishString = data.name;
-            for (int i = 0; i < IngredientManager.recipeByName[dishString].Count - 1; i++)
-            {
-                var ingre = IngredientManager.recipeByName[dishString][i];
-                //var removeIndex = ingredientToSelect.FindIndex(x => x.ingredient == ingre && x.dishData.time == data.time);
-                //ingredientToSelect.RemoveAt(removeIndex);
-            }
+            //var dishString = data.name;
+            //for (int i = 0; i < IngredientManager.recipeByName[dishString].Count - 1; i++)
+            //{
+            //    var ingre = IngredientManager.recipeByName[dishString][i];
+            //    //var removeIndex = ingredientToSelect.FindIndex(x => x.ingredient == ingre && x.dishData.time == data.time);
+            //    //ingredientToSelect.RemoveAt(removeIndex);
+            //}
 
 
 
-            EventPool.Trigger("updateOrder");
-            EventPool.Trigger("finishOrder", data.name);
+        EventPool.Trigger("updateOrder");
+        EventPool.Trigger("updateNote");
+        EventPool.Trigger("finishOrder", data.name);
         }
 
 
@@ -319,7 +343,7 @@ public class OrderManager : Singleton<OrderManager>
         
         public Vector3 getDishCellPosition(DishData data)
         {
-            var index = dishes.FindIndex(x => x.time == data.time);
+            var index = dishes.FindIndex(x => x.time == data.time && x.name == data.name);
             var transform = cells[index].transform;
             Vector3 orderPosition = Camera.main.ScreenToWorldPoint(transform.position);
             return orderPosition;

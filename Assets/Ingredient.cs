@@ -68,18 +68,19 @@ public class Ingredient : MonoBehaviour
     {
         if (startThrow)
         {
-
             time += Time.deltaTime* moveSpeed;
             Vector3 pos = Vector3.Lerp(startPosition, trashPosition, time);
             pos.y += curve.Evaluate(time);
             transform.position = pos;
             if (time >= 1)
             {
+                Debug.Log("throw");
 
                 SFXManager.Instance.playthrowGarbage();
                 Destroy(gameObject);
                 GameObject.FindObjectOfType<RubishBin>().playAnim();
-
+                time = 0;
+                startThrow = false;
             }
         }
         if (startPutIntoPot && time <= 1)
@@ -92,8 +93,11 @@ public class Ingredient : MonoBehaviour
 
             if (time >= 1)
             {
+                Debug.Log("put in bin");
                 SFXManager.Instance.playthrowPot();
-                pot.GetComponent<Utencil>().finishAddIngredient();
+                pot.GetComponentInParent<Utencil>().finishAddIngredient();
+                time = 0;
+                startPutIntoPot = false;
             }
         }
 

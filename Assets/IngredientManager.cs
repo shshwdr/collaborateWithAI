@@ -167,7 +167,7 @@ public class IngredientManager : Singleton<IngredientManager>
     GameObject initIngredient(string ing)
     {
         //
-        var position = new Vector3(Random.Range(-11, 16), Random.Range(-5, 8), 0);
+        var position = new Vector3(Random.Range(-12, 17), Random.Range(-4, 8), 0);
 
 
 
@@ -179,14 +179,14 @@ public class IngredientManager : Singleton<IngredientManager>
             {
                 if (ingre.GetComponent<Ingredient>().canPick() && ingre.transform.position == position)
                 {
-                    position = new Vector3(Random.Range(-11, 16), Random.Range(-5, 8), 0);
+                    position = new Vector3(Random.Range(-12, 17), Random.Range(-4, 8), 0);
                     isWork = false;
                     break;
                 }
             }
-            if (position.x >= -4 && position.x <= 9 && position.y <=0)
+            if (position.x >= -8 && position.x <= 6 && position.y <=-2)
             {
-                position = new Vector3(Random.Range(-11, 16), Random.Range(-5, 8), 0);
+                position = new Vector3(Random.Range(-12, 17), Random.Range(-4, 8), 0);
                 isWork = false;
             }
             if (isWork)

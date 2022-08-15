@@ -162,8 +162,8 @@ public class OrderCell : MonoBehaviour
         {
             fail();
         }
-        GetComponent<UIView>().Hide();
-        Invoke("fullyRemove", 1f);
+        //GetComponent<UIView>().Hide();
+        Invoke("fullyRemove", 2f);
     }
 
     void fullyRemove()
@@ -175,7 +175,7 @@ public class OrderCell : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (isPreSuccess)
+        if (dishData.isPreRemoved)
         {
             return;
         }
@@ -185,7 +185,9 @@ public class OrderCell : MonoBehaviour
             //this one need to leave now
             OrderManager.Instance.removeDishFail(dishData);
             SFXManager.Instance.playcustomerLeave();
-            isPreSuccess = true;
+
+            dishData.isPreRemoved = true;
+            OrderManager.Instance.setDishToBePreRemoved(dishData);
         }
         else
         {

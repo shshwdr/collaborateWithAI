@@ -15,6 +15,13 @@ public class OrderMenu : MonoBehaviour
         Debug.Log("update order");
         int i = 0;
         var dishes = OrderManager.Instance.dishes;
+
+        foreach(var d in dishes)
+        {
+
+            Debug.Log(d.name);
+        }
+
         foreach(var cell in OrderManager.Instance.cells)
         {
             if (i < dishes.Count)

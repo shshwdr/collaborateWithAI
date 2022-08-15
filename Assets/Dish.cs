@@ -13,29 +13,14 @@ public class Dish : MonoBehaviour
     OrderCell aroundCell;
     int aroundIndex = -1;
 
+    public SpriteRenderer Pan;
+    public Sprite Pot;
+
     public Text dishText;
 
     public float checkCellDistance = 1;
     void Update()
     {
-        //if (target.name != null)
-        //{
-        //    var orderPosition = OrderManager.Instance.getDishCellPosition(target);
-        //    var dir = orderPosition - transform.position;
-        //    if (dir.magnitude < 0.1f)
-        //    {
-        //        Destroy(gameObject);
-
-        //        SFXManager.Instance.playfoodDeliver();
-        //        OrderManager.Instance.remove(target);
-        //    }
-        //    else
-        //    {
-
-        //        dir.Normalize();
-        //        transform.Translate(dir * moveSpeed * Time.deltaTime);
-        //    }
-        //}
     }
 
     public void init(string dishName, DishData target)
@@ -51,6 +36,10 @@ public class Dish : MonoBehaviour
         SFXManager.Instance.playfoodDeliver();
         OrderManager.Instance.removeDishSuccess(target);
 
-        Destroy(gameObject, 1);
+        if(target.utensilType != "pan")
+        {
+            Pan.sprite = Pot;
+        }
+        //Destroy(gameObject, 1);
     }
 }

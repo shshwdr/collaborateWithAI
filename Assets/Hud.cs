@@ -30,7 +30,7 @@ public class Hud : MonoBehaviour
         scoreText.text = score.ToString();
 
         var go = Instantiate(scoreAnim, scoreText.transform.position, Quaternion.identity, scoreText.transform.parent);
-        Destroy(go, 1);
+        Destroy(go, 2);
     }
 
     // Update is called once per frame
