@@ -171,7 +171,7 @@ public class OrderCell : MonoBehaviour
         {
             fail();
         }
-        //GetComponent<UIView>().Hide();
+        GetComponent<UIView>().Hide();
         //Invoke("fullyRemove", 2f);
     }
 
@@ -186,7 +186,7 @@ public class OrderCell : MonoBehaviour
     {
         if (dishData.isPreRemoved)
         {
-            if(Time.time - dishData.preRemovedTime >= 2)
+            if(Time.time - dishData.preRemovedTime >= 4)
             {
                 fullyRemove();
             }

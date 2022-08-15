@@ -39,9 +39,10 @@ public struct DishData
 }
 public class OrderManager : Singleton<OrderManager>
 {
+    int finishedOrder = 0;
     public int minPatience = 50;
     public int currentParence = 100;
-    public int decreasePatienceTime = 1;
+    public int decreasePatienceTime = 5;
     float decreasePatienceTimer = 0;
     public List<Sprite> customerSprites;
 
@@ -354,7 +355,34 @@ public class OrderManager : Singleton<OrderManager>
         EventPool.Trigger("updateOrder");
         EventPool.Trigger("updateNote");
         EventPool.Trigger("finishOrder", data.name);
+
+        finishedOrder++;
+        if (finishedOrder == 1)
+        {
+            TutorialManager.Instance. showTutorial("second_0");
+        }else if(finishedOrder == 2)
+        {
+            TutorialManager.Instance.showTutorial("third_0");
+            
         }
+
+        else if (finishedOrder == 3)
+        {
+
+            TutorialManager.Instance.showTutorial("second2_0");
+        }
+        else if (finishedOrder == 4)
+        {
+
+            TutorialManager.Instance.showTutorial("second3_0");
+        }
+        //else if (finishedOrder == 5)
+        //{
+
+        //    TutorialManager.Instance.showTutorial("second3_0");
+        //}
+
+    }
 
 
 

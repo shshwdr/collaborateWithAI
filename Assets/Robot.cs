@@ -323,8 +323,8 @@ public class Robot : MonoBehaviour
     void speedUpSlap()
     {
 
-        SFXManager.Instance.playslap();
-        SFXManager.Instance.playOuch();
+        SFXManager.Instance.playHurry();
+        //SFXManager.Instance.playOuch();
 
         isSpeedUp = true;
         animator.speed = speedupScale;
@@ -347,7 +347,7 @@ public class Robot : MonoBehaviour
         }
 
     }
-    int talkPossibility = 3;
+    public int talkPossibility = 5;
     void stopSpeedUp()
     {
 

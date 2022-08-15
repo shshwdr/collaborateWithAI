@@ -43,6 +43,8 @@ public class GameManager : MonoBehaviour
         isGameOver = false;
         IngredientManager.Instance.initBoard();
         OrderManager.Instance.init();
+
+        TutorialManager.Instance.showTutorial("first_0");
     }
 
     // Start is called before the first frame update

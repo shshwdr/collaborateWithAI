@@ -27,8 +27,8 @@ public class IngredientManager : Singleton<IngredientManager>
     }
 
 
-    static public List<string> ingredientTypes = new List<string>() { "egg", "apple","broccoli", "meat","flour","pepper"/*"cheese", "chocolate","onion", "lettuce", "pepper", "potato"*/ };
-    static public List<string> InstructionTypes = new List<string>() { /*"round",*/  "red", "white", "green" };
+    static public List<string> ingredientTypes = new List<string>() { "egg", "apple","broccoli", "meat","flour","pepper","cheese", "banana"/*"chocolate","onion", "lettuce", "pepper", "potato"*/ };
+    static public List<string> InstructionTypes = new List<string>() { /*"round",*/  "red", "white", "green", "yellow" };
     static public List<string> UtencilTypes = new List<string>() { "pan","pot" };
 
     static public Dictionary<string, List<List<string>>> recipe = new Dictionary<string, List<List<string>>>()
@@ -104,7 +104,7 @@ public class IngredientManager : Singleton<IngredientManager>
         var sprite = Resources.Load<Sprite>("ingredient/" + str+ "-shadow");
         if (!sprite)
         {
-            Debug.LogError("failed to find ingredient image shadow " + str);
+            //Debug.LogError("failed to find ingredient image shadow " + str);
         }
         return sprite;
     }
@@ -184,7 +184,7 @@ public class IngredientManager : Singleton<IngredientManager>
                     break;
                 }
             }
-            if (position.x >= -8 && position.x <= 6 && position.y <=-2)
+            if (position.x >= -8 && position.x <= 6 && position.y <=0)
             {
                 position = new Vector3(Random.Range(-12, 17), Random.Range(-4, 8), 0);
                 isWork = false;
@@ -217,6 +217,8 @@ public class IngredientManager : Singleton<IngredientManager>
         ingredientToInstructions["broccoli"] = new List<string>() {"green" };
         ingredientToInstructions["flour"] = new List<string>() { "white" };
         ingredientToInstructions["pepper"] = new List<string>() { "green" };
+        ingredientToInstructions["banana"] = new List<string>() { "yellow" };
+        ingredientToInstructions["cheese"] = new List<string>() { "yellow" };
 
         recipe["pan"] = new List<List<string>>()
         {
@@ -231,6 +233,11 @@ public class IngredientManager : Singleton<IngredientManager>
             new List<string>(){ "flour", "egg", "cake" },
             new List<string>(){ "pepper", "egg", "Pepper Egg-in-a-Hole" },
 
+
+            new List<string>(){ "flour", "banana", "banana pancake" },
+            new List<string>(){ "apple", "banana", "fruit bowl" },
+
+            new List<string>(){ "pepper", "cheese", "cheese in pepper" },
 
             //new List<string>(){ "flour", "meat", "pizza" },
 
@@ -248,6 +255,13 @@ public class IngredientManager : Singleton<IngredientManager>
             new List<string>(){ "pepper", "apple","wowie jam" },
             new List<string>(){ "flour", "broccoli", "vegetable Spaghetti" },
             new List<string>(){ "flour", "meat", "meat Spaghetti" },
+            new List<string>(){ "flour", "cheese", "mac & cheese" },
+            new List<string>(){ "broccoli", "cheese", "cheesy broccoli" },
+
+
+
+
+
 
         };
 
@@ -279,8 +293,14 @@ public class IngredientManager : Singleton<IngredientManager>
         foreach(var ing in ingredientTypes)
         {
             addIngredient(initIngredient(ing));
-            addIngredient(initIngredient(ing));
         }
+
+
+        addIngredient(initIngredient("egg"));
+        addIngredient(initIngredient("egg"));
+        addIngredient(initIngredient("egg"));
+        addIngredient(initIngredient("egg"));
+        addIngredient(initIngredient("egg"));
     }
 
     void addIngredient(GameObject go)

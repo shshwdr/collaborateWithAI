@@ -9,6 +9,7 @@ public class SFXManager : Singleton<SFXManager>
     [SerializeField] AudioClip collectIngredient;
     [SerializeField] AudioClip buttonClick;
     [SerializeField] AudioClip[] ouch;
+    [SerializeField] AudioClip[] hurry;
     [SerializeField] AudioClip throwGarbage;
     [SerializeField] AudioClip throwPot;
     [SerializeField] AudioClip foodDeliver;
@@ -77,9 +78,16 @@ public class SFXManager : Singleton<SFXManager>
 
     public void playOuch()
     {
-        if (ouch.Length>0)
+        if (ouch.Length > 0)
         {
             audioSource.PlayOneShot(ouch[Random.Range(0, ouch.Length)]);
+        }
+    }
+    public void playHurry()
+    {
+        if (hurry.Length > 0)
+        {
+            audioSource.PlayOneShot(hurry[Random.Range(0, hurry.Length)]);
         }
     }
 

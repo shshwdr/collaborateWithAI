@@ -202,6 +202,8 @@ public class Utencil : MonoBehaviour
         else if (ingredients.Count >= 2)
         {
             OnMouseUpAsButton();
+
+            TutorialManager.Instance.showTutorial("throw");
         }
 
         EventPool.Trigger("updateNote");
