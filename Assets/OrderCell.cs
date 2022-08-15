@@ -63,8 +63,15 @@ public class OrderCell : MonoBehaviour
 
     public void init(DishData data)
     {
+        if (data.words!="")
+        {
+            chatBox.show(data.words);
+        }
+        else
+        {
 
-        chatBox.hide();
+            chatBox.hide();
+        }
         GetComponent<UIView>().Show();
         dish = data.name;
         dishData = data;
@@ -128,7 +135,9 @@ public class OrderCell : MonoBehaviour
         };
 
 
-        chatBox.show(succeedWords[Random.Range(0, succeedWords.Count)]);
+        var words = succeedWords[Random.Range(0, succeedWords.Count)]; ;
+        OrderManager.Instance.setDishWords(dishData, words);
+        chatBox.show(words);
     }
 
     void fail()
@@ -147,9 +156,9 @@ public class OrderCell : MonoBehaviour
             "This is insanely slow!",
 
         };
-
-
-        chatBox.show(failWords[Random.Range(0, failWords.Count)]);
+        var words = failWords[Random.Range(0, failWords.Count)]; ;
+        OrderManager.Instance.setDishWords(dishData, words);
+        chatBox.show(words);
     }
 
     public void removeCellWithAnim(bool succeed)
@@ -163,7 +172,7 @@ public class OrderCell : MonoBehaviour
             fail();
         }
         //GetComponent<UIView>().Hide();
-        Invoke("fullyRemove", 2f);
+        //Invoke("fullyRemove", 2f);
     }
 
     void fullyRemove()
@@ -177,6 +186,10 @@ public class OrderCell : MonoBehaviour
     {
         if (dishData.isPreRemoved)
         {
+            if(Time.time - dishData.preRemovedTime >= 2)
+            {
+                fullyRemove();
+            }
             return;
         }
         var timeDiff =  Time.time - dishData.time;
@@ -186,7 +199,7 @@ public class OrderCell : MonoBehaviour
             OrderManager.Instance.removeDishFail(dishData);
             SFXManager.Instance.playcustomerLeave();
 
-            dishData.isPreRemoved = true;
+            //dishData.isPreRemoved = true;
             OrderManager.Instance.setDishToBePreRemoved(dishData);
         }
         else

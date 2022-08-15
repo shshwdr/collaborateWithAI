@@ -8,24 +8,22 @@ public struct DishData
 {
     public string name;
     public bool isPreRemoved;
+    public float preRemovedTime;
     public float time;
     public float patienceTime;
     public int customerIndex;
     public string utensilType;
     public List<string> ingredients;
     public List<GameObject> ingredientsOnHold;
+    public string words;
 
-
-    public void remove()
-    {
-        isPreRemoved = true;
-    }
     public DishData(string n, List<string> ing)
     {
         name = n;
         this.utensilType = ing[ing.Count - 1];
         isPreRemoved = false;
         time = Time.time;
+        preRemovedTime = -1;
         patienceTime = OrderManager.Instance.currentParence;
         ingredients = new List<string>();
         ingredientsOnHold = new List<GameObject>();
@@ -36,6 +34,7 @@ public struct DishData
         }
 
         customerIndex = Random.Range(0, OrderManager.Instance.customerSprites.Count);
+        words = "";
     }
 }
 public class OrderManager : Singleton<OrderManager>
@@ -127,14 +126,24 @@ public class OrderManager : Singleton<OrderManager>
         EventPool.Trigger("updateNote");
         SFXManager.Instance.playcustomerArrive();
     }
+    public void setDishWords(DishData data,string words)
+    {
 
+        var index = dishes.FindIndex(x => x.time == data.time && x.name == data.name);
+
+        data.words = words;
+        dishes[index] = data;
+    }
     public void setDishToBePreRemoved(DishData data)
     {
 
         var index = dishes.FindIndex(x => x.time == data.time && x.name == data.name);
 
         data.isPreRemoved = true;
+        data.preRemovedTime = Time.time;
         dishes[index] = data;
+
+        EventPool.Trigger("updateOrder");
     }
 
     void addOrderByUtensil(string utensil)
@@ -233,9 +242,9 @@ public class OrderManager : Singleton<OrderManager>
             }
             else
             {
-                for (int j = 0; j < sortedDishes[j].ingredients.Count; j++)
+                for (int j = 0; j < sortedDishes[i].ingredients.Count; j++)
                 {
-                    var ing = sortedDishes[j].ingredients[j];
+                    var ing = sortedDishes[i].ingredients[j];
                     {
                         if (ingredientHoldByAnother.Contains(ing))
                         {
@@ -269,8 +278,7 @@ public class OrderManager : Singleton<OrderManager>
                 if (dish.name == dishString && !dish.isPreRemoved)
                 {
                 // dishes[i].isPreRemoved = true;
-                dish.isPreRemoved = true;
-                dishes[i] = dish;
+                setDishToBePreRemoved(dish);
                     playCookEffect(i);
                 EventPool.Trigger("updateNote");
                 return dishes[i];
@@ -300,6 +308,11 @@ public class OrderManager : Singleton<OrderManager>
     {
 
         var index = dishes.FindIndex(x => x.time == dish.time && x.name == dish.name);
+        if (index == -1)
+        {
+            Debug.LogError("remove dish wrong");
+            return;
+        }
         var cell = cells[index];
         cell.removeCellWithAnim(false);
     }
@@ -307,7 +320,12 @@ public class OrderManager : Singleton<OrderManager>
     public void removeDishSuccess(DishData dish)
     {
 
-        var index = dishes.FindIndex(x => x.time == dish.time && x.name == dish.name);
+        var index = dishes.FindIndex(x => x.time == dish.time && x.name == dish.name); 
+        if (index == -1)
+        {
+            Debug.LogError("remove dish wrong");
+            return;
+        }
         var cell = cells[index];
         cell.removeCellWithAnim(true);
     }
@@ -360,10 +378,17 @@ public class OrderManager : Singleton<OrderManager>
         public void init()
         {
             dishes = new List<DishData>();
+        addOrder("friedEgg"); 
+            addOrder("boilingEgg");
+        //addOrderByUtensil("pot");
+        //addOrderByUtensil("pan");
+
         robots = GameObject.FindObjectsOfType<Robot>();
-        addOrderByUtensil("pot");
-        addOrderByUtensil("pan");
-            var utensils = GameObject.FindObjectsOfType<Utencil>();
+        foreach (var r in robots)
+        {
+            r.init();
+        }
+        var utensils = GameObject.FindObjectsOfType<Utencil>();
             foreach (var u in utensils)
             {
 

@@ -100,10 +100,11 @@ public class Utencil : MonoBehaviour
             }
             if(data.utensilType == utencilType)
             {
-                if (note.name == null)
+                //if (note.name == null)
                 {
 
                     note = data;
+                    break;
                 }
                 //else
                 //{
@@ -271,8 +272,6 @@ public class Utencil : MonoBehaviour
     void startCook()
     {
         isCooking = true;
-        clearNote();
-        updateNote();
 
         var res = IngredientManager.cook(utencilType, ingredientTypes);
         currentCookingDish = OrderManager.Instance.tryRemove(res);
@@ -294,6 +293,8 @@ public class Utencil : MonoBehaviour
             }
         }
 
+        clearNote();
+        updateNote();
         Debug.Log("cooking " + res);
 
         Invoke("finishCook", cookTime);

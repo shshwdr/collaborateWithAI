@@ -47,12 +47,12 @@ public class Robot : MonoBehaviour
     }
 
     // Start is called before the first frame update
-    void Start()
+    public void init()
     {
         path = GetComponentInChildren<LineRenderer>();
         rubishBin = GameObject.FindObjectOfType<RubishBin>().gameObject;
-        smartSelectInstruction();
         animator = GetComponentInChildren<Animator>();
+        smartSelectInstruction();
     }
     bool isClick()
     {
@@ -152,8 +152,8 @@ public class Robot : MonoBehaviour
                         }
                         if (!target.GetComponent<Utencil>().addIngredient(holdIngredent))
                         {
-                            chatObject.show("Is In Use");
-                            slap();
+                            chatObject.show("This is in use");
+                            updateToNextUtensil();
                             return;
                         }
                     }
@@ -209,6 +209,10 @@ public class Robot : MonoBehaviour
     void smartDecideNextIngredientSelection()
     {
         var nextIngredient = OrderManager.Instance.findNextIngredient_v2();
+        if(nextIngredient == null)
+        {
+            return;
+        }
         var nextInstruction = IngredientManager.ingredientToInstructions[nextIngredient][0];
 
         idealTarget = nextIngredient;
@@ -254,6 +258,27 @@ public class Robot : MonoBehaviour
 
     List<GameObject> visitedObjects = new List<GameObject>();
 
+    void updateToNextUtensil()
+    {
+        if (target.GetComponent<RubishBin>())
+        {
+            //if is bin, revisit
+            visitedObjects.Clear();
+        }
+
+        var nextOption = IngredientManager.Instance.selectUtencil(this, visitedObjects);
+        if (nextOption)
+        {
+
+            target = nextOption;
+        }
+        else
+        {
+            //goto bin
+            target = rubishBin;
+        }
+    }
+
     void slap()
     {
 
@@ -262,23 +287,7 @@ public class Robot : MonoBehaviour
         SFXManager.Instance.playOuch();
         if (holdIngredent)
         {
-            if (target.GetComponent<RubishBin>())
-            {
-                //if is bin, revisit
-                visitedObjects.Clear();
-            }
-
-            var nextOption = IngredientManager.Instance.selectUtencil(this, visitedObjects);
-            if (nextOption)
-            {
-
-                target = nextOption;
-            }
-            else
-            {
-                //goto bin
-                target = rubishBin;
-            }
+            updateToNextUtensil();
         }
         else
         {
@@ -293,6 +302,22 @@ public class Robot : MonoBehaviour
         }
 
         var go = Instantiate(slapObject, transform.position, Quaternion.identity, transform);
+
+
+        List<string> hurryWords = new List<string>()
+        {
+            "Not this one? Ok..",
+            "On my way!",
+            "They look the same!",
+            
+
+        };
+        if (Random.Range(0, talkPossibility) == 0)
+        {
+
+            var words = hurryWords[Random.Range(0, hurryWords.Count)];
+            chatObject.show(words);
+        }
     }
 
     void speedUpSlap()
@@ -306,7 +331,23 @@ public class Robot : MonoBehaviour
 
         var go = Instantiate(slapObject,transform.position,Quaternion.identity,transform);
         go.GetComponent<Slap>().useHurry();
+
+        List<string> hurryWords = new List<string>()
+        {
+            "I know I know",
+            "Don't push me!",
+            "I'm on fire!",
+
+        };
+        if (Random.Range(0, talkPossibility) ==0)
+        {
+
+            var words = hurryWords[Random.Range(0, hurryWords.Count)];
+            chatObject.show(words);
+        }
+
     }
+    int talkPossibility = 3;
     void stopSpeedUp()
     {
 
