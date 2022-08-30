@@ -19,14 +19,18 @@ public class GameManager : MonoBehaviour
         if (maxMissedOrder <= missedOrder && !isGameOver)
         {
             isGameOver = true;
+            SFXManager.Instance.playgameover();
             Invoke("showGameOver", 1);
         }
     }
 
     void showGameOver()
     {
+        var gameoverString = "Game Over\n";
+        gameoverString += $"You served {OrderManager.Instance.finishedOrder} dishes and earned {OrderManager.Instance.finishedOrder * 10}. \nBut you wasted {OrderManager.Instance.throwedToGarbage} food.\n";
+        gameoverString += "Hope you enjoyed it and good luck next time!";
 
-        GameObject.FindObjectOfType<Popup>(true).Init("Game Over", () => {
+        GameObject.FindObjectOfType<Popup>(true).Init(gameoverString, () => {
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             restartGame();
 

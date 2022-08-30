@@ -351,6 +351,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1263505433}
     m_Modifications:
+    - target: {fileID: 503362066, guid: 0c3d42fa7c507994a934bb070a7aeeb8, type: 3}
+      propertyPath: m_Radius
+      value: 1.416978
+      objectReference: {fileID: 0}
+    - target: {fileID: 503362066, guid: 0c3d42fa7c507994a934bb070a7aeeb8, type: 3}
+      propertyPath: m_Offset.y
+      value: -2.268417
+      objectReference: {fileID: 0}
     - target: {fileID: 374218689678302397, guid: 0c3d42fa7c507994a934bb070a7aeeb8, type: 3}
       propertyPath: m_audioClip
       value: 
@@ -491,6 +499,10 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: d230a7a628c69f54fa9082223c891c75, type: 3}
+    - target: {fileID: 7757457800821447331, guid: 0c3d42fa7c507994a934bb070a7aeeb8, type: 3}
+      propertyPath: m_BlockingMask.m_Bits
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7877650483464659963, guid: 0c3d42fa7c507994a934bb070a7aeeb8, type: 3}
       propertyPath: m_SortingLayer
       value: 1
@@ -507,7 +519,8 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: -1.12
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 503362066, guid: 0c3d42fa7c507994a934bb070a7aeeb8, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 0c3d42fa7c507994a934bb070a7aeeb8, type: 3}
 --- !u!4 &163395897 stripped
 Transform:
@@ -519,8 +532,8 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 2273269384917689935, guid: 0c3d42fa7c507994a934bb070a7aeeb8, type: 3}
   m_PrefabInstance: {fileID: 163395896}
   m_PrefabAsset: {fileID: 0}
---- !u!58 &163395899
-CircleCollider2D:
+--- !u!61 &163395899
+BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -532,9 +545,19 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: -0.047799826, y: -1.8163921}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
   serializedVersion: 2
-  m_Radius: 1.28
+  m_Size: {x: 3.5811887, y: 1.5735977}
+  m_EdgeRadius: 0
 --- !u!114 &176118880 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 756083344426795307, guid: e36486dd49cc6214c895cc5e040ab982, type: 3}
@@ -616,7 +639,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 100
+  m_Text: 0
 --- !u!222 &182563750
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1077,15 +1100,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54162d8fe0b189140ba758ed3771a397, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  finishedOrder: 0
   minPatience: 50
-  currentParence: 100
-  decreasePatienceTime: 1
+  currentParence: 120
+  decreasePatienceTime: 5
   customerSprites:
   - {fileID: 21300000, guid: 8babe699cfebb4448b8345a3667b6356, type: 3}
   - {fileID: 21300000, guid: 88a819aac7c2be340bc55788da6212d7, type: 3}
   - {fileID: 21300000, guid: 0110c12bb909ea542b01332b4498e7c3, type: 3}
   - {fileID: 21300000, guid: 6c8f30441fc18df4ea208ec5a3d9c338, type: 3}
   - {fileID: 21300000, guid: 55d51399811d2914ead6efa03c1303df, type: 3}
+  throwedToGarbage: 0
   cells:
   - {fileID: 1237199711}
   - {fileID: 32239880}
@@ -1189,7 +1214,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a0c6d03b68f5064d90ef3ecdffee67d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxIngredient: 20
+  maxIngredient: 25
   fillTime: 2
   ingredientPrefab: {fileID: 4963591633628430123, guid: 20f7d7b9bf65f624dac869fb87dd10c0, type: 3}
   square: {fileID: 21300000, guid: cceb47b09b472214689adb6671ce0c80, type: 3}
@@ -1764,6 +1789,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 117e75dfde61f504c9a1ee9374b9d8fa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shoulShowTutorial: 1
 --- !u!4 &1191964930
 Transform:
   m_ObjectHideFlags: 0
@@ -3212,12 +3238,15 @@ MonoBehaviour:
   ouch:
   - {fileID: 8300000, guid: 44d74d0ebdddf2945833f886828ed9f2, type: 3}
   - {fileID: 8300000, guid: b3ac662b9d1a3034d803071e0cff6112, type: 3}
+  hurry:
+  - {fileID: 8300000, guid: 3a30418d59d4a154b97ed4951738de52, type: 3}
   throwGarbage: {fileID: 8300000, guid: 87adb8b7c800d3d40b0716547a353d8f, type: 3}
   throwPot: {fileID: 8300000, guid: 59d81da6e3ab13b488d6a05c81ec8ec6, type: 3}
   foodDeliver: {fileID: 8300000, guid: 3479b8054717c004e8f05642a4ffdafa, type: 3}
   customerLeave: {fileID: 8300000, guid: 3bca1340aa1bc9f449bef0fd996abc4d, type: 3}
   customerArrive: {fileID: 8300000, guid: a566f53c4a15590429c32a0ed6d09fb6, type: 3}
   slap: {fileID: 8300000, guid: 26a78c54b64aa4b4f8c15a6a93994f05, type: 3}
+  gameover: {fileID: 0}
 --- !u!1001 &2120031983
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3743,6 +3772,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7757457800821447331, guid: 0c3d42fa7c507994a934bb070a7aeeb8, type: 3}
+      propertyPath: m_BlockingMask.m_Bits
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7877650483464659963, guid: 0c3d42fa7c507994a934bb070a7aeeb8, type: 3}
       propertyPath: m_SortingLayer
       value: 1
@@ -3750,6 +3783,14 @@ PrefabInstance:
     - target: {fileID: 7877650483464659963, guid: 0c3d42fa7c507994a934bb070a7aeeb8, type: 3}
       propertyPath: m_SortingLayerID
       value: -1772264903
+      objectReference: {fileID: 0}
+    - target: {fileID: 9174355743345264103, guid: 0c3d42fa7c507994a934bb070a7aeeb8, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9174355743345264103, guid: 0c3d42fa7c507994a934bb070a7aeeb8, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0c3d42fa7c507994a934bb070a7aeeb8, type: 3}

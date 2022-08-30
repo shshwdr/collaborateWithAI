@@ -265,6 +265,7 @@ MonoBehaviour:
   angryPercent: 0.4
   staticUtensil: {fileID: 370073161}
   animator: {fileID: 9106966400961399533}
+  newChatBoxPrefab: {fileID: 4061789381687306722, guid: 5e18bb6f0ae028044b58a92440e4faba, type: 3}
 --- !u!223 &8218514765620234423
 Canvas:
   m_ObjectHideFlags: 0
@@ -335,7 +336,7 @@ MonoBehaviour:
   AutoHideAfterShow: 0
   AutoHideAfterShowDelay: 3
   AutoSelectButtonAfterShow: 0
-  BehaviorAtStart: 1
+  BehaviorAtStart: 0
   CustomStartAnchoredPosition: {x: 80, y: -50, z: 0}
   DeselectAnyButtonSelectedOnHide: 0
   DeselectAnyButtonSelectedOnShow: 0
@@ -792,7 +793,7 @@ MonoBehaviour:
         Elasticity: 1
         NumberOfLoops: -1
         LoopType: 1
-        Direction: 0
+        Direction: 8
         CustomPosition: {x: 0, y: 0, z: 0}
         EaseType: 0
         Ease: 27
@@ -848,7 +849,7 @@ MonoBehaviour:
           m_PostInfinity: 2
           m_RotationOrder: 4
         StartDelay: 0
-        Duration: 0.3
+        Duration: 0.01
       Rotate:
         AnimationType: 1
         Enabled: 0
@@ -945,7 +946,7 @@ MonoBehaviour:
         Duration: 0.4
       Scale:
         AnimationType: 1
-        Enabled: 1
+        Enabled: 0
         From: {x: 0, y: 0, z: 0}
         To: {x: 0, y: 0, z: 0}
         By: {x: 0, y: 0, z: 0}
@@ -2408,7 +2409,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2596785151176646786, guid: a3923caea1dfc564bb2d40fae40b40a5, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a3923caea1dfc564bb2d40fae40b40a5, type: 3}

@@ -16,6 +16,7 @@ public class SFXManager : Singleton<SFXManager>
     [SerializeField] AudioClip customerLeave;
     [SerializeField] AudioClip customerArrive;
     [SerializeField] AudioClip slap;
+    [SerializeField] AudioClip gameover;
 
     public void playCollectIngredient()
     {
@@ -36,6 +37,13 @@ public class SFXManager : Singleton<SFXManager>
         if (throwGarbage)
         {
             audioSource.PlayOneShot(throwGarbage);
+        }
+    }
+    public void playgameover()
+    {
+        if (gameover)
+        {
+            audioSource.PlayOneShot(gameover);
         }
     }
     public void playthrowPot()

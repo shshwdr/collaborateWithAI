@@ -8,6 +8,7 @@ public struct DishData
 {
     public string name;
     public bool isPreRemoved;
+    public bool isFailed;
     public float preRemovedTime;
     public float time;
     public float patienceTime;
@@ -20,6 +21,7 @@ public struct DishData
     public DishData(string n, List<string> ing)
     {
         name = n;
+        isFailed = false;
         this.utensilType = ing[ing.Count - 1];
         isPreRemoved = false;
         time = Time.time;
@@ -39,12 +41,14 @@ public struct DishData
 }
 public class OrderManager : Singleton<OrderManager>
 {
-    int finishedOrder = 0;
+    public int finishedOrder = 0;
     public int minPatience = 50;
     public int currentParence = 100;
     public int decreasePatienceTime = 5;
     float decreasePatienceTimer = 0;
     public List<Sprite> customerSprites;
+
+    public int throwedToGarbage = 0;
 
     public List<DishData> dishes;
     public OrderCell[] cells;
@@ -141,6 +145,19 @@ public class OrderManager : Singleton<OrderManager>
         var index = dishes.FindIndex(x => x.time == data.time && x.name == data.name);
 
         data.isPreRemoved = true;
+        data.preRemovedTime = Time.time;
+        dishes[index] = data;
+
+        EventPool.Trigger("updateOrder");
+    }
+
+    public void setDishToBePreRemovedFailed(DishData data)
+    {
+
+        var index = dishes.FindIndex(x => x.time == data.time && x.name == data.name);
+
+        data.isPreRemoved = true;
+        data.isFailed = true;
         data.preRemovedTime = Time.time;
         dishes[index] = data;
 
@@ -281,6 +298,7 @@ public class OrderManager : Singleton<OrderManager>
                 // dishes[i].isPreRemoved = true;
                 setDishToBePreRemoved(dish);
                     playCookEffect(i);
+                EventPool.Trigger("updateOrder");
                 EventPool.Trigger("updateNote");
                 return dishes[i];
                 }

@@ -41,6 +41,8 @@ public class OrderCell : MonoBehaviour
 
 
     public Animator animator;
+
+    public GameObject newChatBoxPrefab;
     //public Text dishString;
     // Start is called before the first frame update
     void Start()
@@ -63,16 +65,15 @@ public class OrderCell : MonoBehaviour
 
     public void init(DishData data)
     {
-        if (data.words!="")
-        {
-            chatBox.show(data.words);
-        }
-        else
-        {
+        //if (data.words!="")
+        //{
+        //    chatBox.show(data.words);
+        //}
+        //else
+        //{
 
-            chatBox.hide();
-        }
-        GetComponent<UIView>().Show();
+        //    chatBox.hide();
+        //}
         dish = data.name;
         dishData = data;
         dishString.text = dish;
@@ -81,6 +82,24 @@ public class OrderCell : MonoBehaviour
         sadFace.gameObject.SetActive(false);
         background.sprite = normalBackground;
         patienceBar.sprite = normalPatienceBar;
+
+
+        if (data.isPreRemoved)
+        {
+            if (data.isFailed)
+            {
+
+                sadFace.gameObject.SetActive(true);
+                background.sprite = angryBackground;
+            }
+            else
+            {
+
+                happyFace.gameObject.SetActive(true);
+                background.sprite = happyBackground;
+            }
+            //GetComponent<UIView>().Show();
+        }
 
         var recipe = IngredientManager.recipeByName[dish];
         int i = 0;
@@ -106,18 +125,18 @@ public class OrderCell : MonoBehaviour
         //dishString.text += recipe[recipe.Count - 1] + " ";
     }
 
-    public void showWithFood(bool like)
-    {
-        if (like)
-        {
-            chatBox.show("give me give me!");
-        }
-        else
-        {
+    //public void showWithFood(bool like)
+    //{
+    //    if (like)
+    //    {
+    //        chatBox.show("give me give me!");
+    //    }
+    //    else
+    //    {
 
-            chatBox.show("not interested..");
-        }
-    }
+    //        chatBox.show("not interested..");
+    //    }
+    //}
 
     void success()
     {
@@ -134,10 +153,20 @@ public class OrderCell : MonoBehaviour
 
         };
 
+       var newChatBox = Instantiate<GameObject>(newChatBoxPrefab,chatBox.transform.position,Quaternion.identity, GetComponentInParent<OrderMenu>().transform.parent).GetComponent<ChatBox>();
 
-        var words = succeedWords[Random.Range(0, succeedWords.Count)]; ;
-        OrderManager.Instance.setDishWords(dishData, words);
-        chatBox.show(words);
+        var words = succeedWords[Random.Range(0, succeedWords.Count)];
+       // OrderManager.Instance.setDishWords(dishData, words);
+        newChatBox.show(words);
+        //newChatBox.gameObject.SetActive(true);
+        Destroy(newChatBox.gameObject, 2);
+        StartCoroutine(test(newChatBox.gameObject));
+    }
+
+    IEnumerator test(GameObject newChatBox)
+    {
+        yield return new WaitForSeconds(0.1f);
+        newChatBox.SetActive(true);
     }
 
     void fail()
@@ -156,9 +185,12 @@ public class OrderCell : MonoBehaviour
             "This is insanely slow!",
 
         };
+        var newChatBox = Instantiate<GameObject>(newChatBoxPrefab, chatBox.transform.position, Quaternion.identity, GetComponentInParent<Canvas>().transform).GetComponent<ChatBox>();
         var words = failWords[Random.Range(0, failWords.Count)]; ;
-        OrderManager.Instance.setDishWords(dishData, words);
-        chatBox.show(words);
+       // OrderManager.Instance.setDishWords(dishData, words);
+        newChatBox.show(words);
+        Destroy(newChatBox.gameObject, 2);
+        StartCoroutine(test(newChatBox.gameObject));
     }
 
     public void removeCellWithAnim(bool succeed)
@@ -171,7 +203,7 @@ public class OrderCell : MonoBehaviour
         {
             fail();
         }
-        GetComponent<UIView>().Hide();
+       // GetComponent<UIView>().Hide();
         //Invoke("fullyRemove", 2f);
     }
 

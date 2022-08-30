@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TutorialManager : Singleton<TutorialManager>
 {
-
+    public bool shoulShowTutorial = true;
     Dictionary<string,string> tutorialString = new Dictionary<string, string>()
     {
         {"first_0","You are preparing meal to children\nYou are assisted by monsters who collect the ingredients for the dishes and carry them to the kitchen." },
@@ -14,6 +14,7 @@ public class TutorialManager : Singleton<TutorialManager>
 
         {"second_0","Congratulation! \nYou cooked your first dish! \nCooked food would send to the customer automatically."},
         {"second_00","You can slap(left click) to make monster move to next utensil.\n Different dish requires different utensil!"},
+        {"second_000","If you picked an ingredient that you don't need, you can slap(left click) to skip both utensil and drop it to the bin."},
 
 
         {"third_0","Since the little guys are quite leisurely on the move, you can also drive them for a short time by yelling Run at them \n(right mouse button)."},
@@ -23,6 +24,7 @@ public class TutorialManager : Singleton<TutorialManager>
 
 
         {"second3_0","To make it a little easier to prepare the right ingredients in the right place, there is a small note on each utensil with ingredients that match one of the current orders."},
+        {"second3_00","But you don't have to follow it, do dishes any order you want! Just make sure each customer has a patience bar..."},
 
 
 
@@ -39,7 +41,10 @@ public class TutorialManager : Singleton<TutorialManager>
 
     public void showTutorial(string name)
     {
-
+        if (!shoulShowTutorial)
+        {
+            return;
+        }
 
         if (isTutorialFinished.ContainsKey(name))
         {
@@ -60,7 +65,7 @@ public class TutorialManager : Singleton<TutorialManager>
 
     IEnumerator show(string name)
     {
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.3f);
         if (tutorialString.ContainsKey(name + "0"))
         {
             showTutorial(name + "0");

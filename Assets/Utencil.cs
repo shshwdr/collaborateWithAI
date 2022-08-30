@@ -176,7 +176,7 @@ public class Utencil : MonoBehaviour
         ingredients.Add(go);
         ingredientTypes.Add(go.GetComponent<Ingredient>().ingredientType);
 
-        IngredientManager.Instance.removeIngredient(go);
+        //IngredientManager.Instance.removeIngredient(go);
 
         go.transform.parent = childParent;
         //go.transform.localPosition = new Vector3(Random.Range(-0.2f, 0.2f), Random.Range(-0.2f, 0.2f), 0);
@@ -206,6 +206,7 @@ public class Utencil : MonoBehaviour
             TutorialManager.Instance.showTutorial("throw");
         }
 
+        EventPool.Trigger("updateOrder");
         EventPool.Trigger("updateNote");
 
     }
@@ -323,6 +324,7 @@ public class Utencil : MonoBehaviour
         dish.GetComponent<Dish>().init(res, currentCookingDish);
         currentCookingDish = new DishData();
         Destroy(dish, cookTime);
+        EventPool.Trigger("updateOrder");
         EventPool.Trigger("updateNote");
     }
 

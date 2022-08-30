@@ -8,6 +8,7 @@ public class ChatBox : MonoBehaviour
     public float textStayTime = 2f;
     float textTimer = 0;
     public Text text;
+    bool alwaysShow;
     // Start is called before the first frame update
     void Start()
     {
@@ -15,8 +16,9 @@ public class ChatBox : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void show(string t)
+    public void show(string t, bool alwaysShow = false)
     {
+        this.alwaysShow = alwaysShow;
         text.text = t;
         textTimer = textStayTime;
         gameObject.SetActive(true);
@@ -32,6 +34,10 @@ public class ChatBox : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (alwaysShow)
+        {
+            gameObject.SetActive(true);
+        }
         if (textTimer > 0)
         {
             textTimer -= Time.deltaTime;

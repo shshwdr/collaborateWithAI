@@ -36,6 +36,7 @@ public class Ingredient : MonoBehaviour
         startPosition = transform.position;
         startThrow = true;
         trashPosition = GameObject.FindObjectOfType<RubishBin>().transform.position;
+        OrderManager.Instance.throwedToGarbage++;
     }
     public void throwToPot(Transform pot, int count)
     {

@@ -53,7 +53,7 @@ public class IngredientManager : Singleton<IngredientManager>
     {
         foreach(var pair in ingredientCount)
         {
-            if (pair.Value == 0)
+            if (pair.Value <= 0)
             {
                 return pair.Key;
             }
